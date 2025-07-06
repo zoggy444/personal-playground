@@ -1,0 +1,26 @@
+{
+    // Name this configuration
+    "name": "Codespace for Skills!",
+    "forwardPorts": [3000],
+    "portsAttributes": {
+        "3000": {
+            "label": "2048 App",
+            "onAutoForward": "openPreview"
+        }
+    },
+    "updateContentCommand": "npm install",
+    "postAttachCommand": "npm run dev",
+
+    // Configure tool-specific properties.
+    "customizations": {
+        "codespaces": {
+            "openFiles": ["src/App.tsx"]
+        },
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+            ]
+        }
+    }
+}
