@@ -5,10 +5,12 @@ function Board({boardSet}) {
 
   return (
     <table>
-      <Row boardRow={boardSet[0]} />
-      <Row boardRow={boardSet[1]} />
-      <Row boardRow={boardSet[2]} />
-      <Row boardRow={boardSet[3]} />
+      <tbody>
+        <Row boardRow={boardSet[0]} />
+        <Row boardRow={boardSet[1]} />
+        <Row boardRow={boardSet[2]} />
+        <Row boardRow={boardSet[3]} />
+      </tbody>
     </table>
   );
 }

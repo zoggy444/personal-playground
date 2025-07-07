@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Board from "./Board.tsx"
 
-const WINCONDITION = 128;
+const WINCONDITION = 256;
 
 function App() {
   const [status, setStatus] = useState("playing");
   const [boardSet, setBoardSet] = useState([
-    [0, 2, 2, 0],
+    [0, 2, 0, 2],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -52,11 +52,13 @@ function App() {
     let newBoardSet = boardSet.map(function (arr) {
       return arr.slice();
     });
-    for (let index in newBoardSet) {
-      newBoardSet[index] = slideLine(newBoardSet[index]);
+    let hasSlided = false;
+    for (let i=0; i<newBoardSet.length; i++) {
+      newBoardSet[i] = slideLine(newBoardSet[i]);
+      if (!areEquals(newBoardSet[i],boardSet[i])) hasSlided = true;
     }
 
-    endTurn(newBoardSet);
+    if (hasSlided) endTurn(newBoardSet);
   };
 
   /**
@@ -68,11 +70,13 @@ function App() {
     let newBoardSet = boardSet.map(function (arr) {
       return arr.slice();
     });
+    let hasSlided = false;
     for (let i in newBoardSet) {
       newBoardSet[i] = slideLine(newBoardSet[i], true);
+      if (!areEquals(newBoardSet[i],boardSet[i])) hasSlided = true;
     }
 
-    endTurn(newBoardSet);
+    if (hasSlided) endTurn(newBoardSet);
   };
 
   /**
@@ -84,6 +88,7 @@ function App() {
     let newBoardSet = boardSet.map(function (arr) {
       return arr.slice();
     });
+    let hasSlided = false;
     for (let j = 0; j < 4; j++) {
       let newCol = slideLine(
         newBoardSet.map((r) => r[j]),
@@ -91,10 +96,11 @@ function App() {
       );
       for (let i = 0; i < 4; i++) {
         newBoardSet[i][j] = newCol[i];
+        if (newBoardSet[i][j] != boardSet[i][j]) hasSlided = true;
       }
     }
 
-    endTurn(newBoardSet);
+    if (hasSlided) endTurn(newBoardSet);
   };
 
   /**
@@ -106,14 +112,16 @@ function App() {
     let newBoardSet = boardSet.map(function (arr) {
       return arr.slice();
     });
+    let hasSlided = false;
     for (let j = 0; j < 4; j++) {
       let newCol = slideLine(newBoardSet.map((r) => r[j]));
       for (let i = 0; i < 4; i++) {
         newBoardSet[i][j] = newCol[i];
+        if (newBoardSet[i][j] != boardSet[i][j]) hasSlided = true;
       }
     }
 
-    endTurn(newBoardSet);
+    if (hasSlided) endTurn(newBoardSet);
   };
 
   const endTurn = function (newBoardSet) {
@@ -121,8 +129,8 @@ function App() {
     if (status != 'won' && maxValue >= WINCONDITION) setStatus('won');
     // a wild number appears...
     const numberAdded = addNewNumber(newBoardSet);
-    // player looses if no number can be added and they haven't already won
-    if (!numberAdded && status != 'won') setStatus('lost');
+    // player looses if board can't be slided and they haven't already won
+    if (!canSlideAny(newBoardSet) && status != "won") setStatus('lost');
     setBoardSet(newBoardSet);
   };
 
@@ -147,18 +155,64 @@ function App() {
   );
 }
 
-function canSlide(m, direction="right") {
-  let res = false;
-  switch (direction) {
-    case "right": 
-      for (let i=0; i<m.length; i++) {
-        const l = m[i];
-        if (isZero(l)) continue;
+/**
+ * Checks if at least one line can be slided.
+ */
+function canSlideAny(m){
+  if (canSlide(m,true,true)) return true;
+  if (canSlide(m,true,false)) return true;
+  if (canSlide(m,false,true)) return true;
+  if (canSlide(m,false,false)) return true;
+  return false;
+}
 
+/**
+ * Checks if at least one line can be slided.
+ */
+function canSlide(m, horizontally=true, reverse=false) {
+  if (horizontally) {
+    for (let i=0; i<m.length; i++) {
+      if (canSlideLine(m[i], reverse)) {
+        console.log("can slide !",horizontally,reverse,i);
+        return true;
       }
-      break;
+    }
+  }else{
+    for (let i=0; i<m[0].length; i++) {
+      if (canSlideLine(m.map(r=>r[i]), reverse)) {
+        console.log("can slide !",horizontally,reverse,i);
+        return true;
+      }
+    }
   }
-  return res;
+  return false;
+}
+
+/**
+ * Checks if this line can be slided.
+ */
+function canSlideLine(line, reverse = false) {
+  if (isZero(line)) return false;
+  let l = reverse ? line.slice().reverse() : line.slice();
+  // check if all numbers are already slided
+  while (l[0] == 0) {
+    l = l.slice(1)
+  }
+  // they are not, line can be slided !
+  if (!isFull(l)) {
+    console.log("can slide for space", l);
+    return true
+  }
+  // tail is full, check if their are equal numbers
+  let i = 1;
+  while (i < l.length) {
+    // two numbers equals, can be merged !
+    if (l[i] == l[i-1]){
+    console.log("can slide for merge", l);
+    return true
+  }
+  }
+  return false;
 }
 
 /**
@@ -259,11 +313,22 @@ function isZero(a) {
 }
 
 /**
- * checks if at least one cell is 0
+ * Checks if at least one cell is 0
  */
 function isFull(a) {
   for (let i = 0; i < a.length; i++) {
-    if (a[i] != 0) return false;
+    if (a[i] == 0) return false;
+  }
+  return true;
+}
+
+/**
+ * Check for equality.
+ * We assume both arrays are of same length.
+ */
+function areEquals(a1, a2) {
+  for (let i=0; i<a1.length; i++) {
+    if (a1[i] != a2[i]) return false;
   }
   return true;
 }
