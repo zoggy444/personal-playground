@@ -1,7 +1,7 @@
 import Row from './Row.tsx';
 import './Components.css';
 
-function Board({boardSet}) {
+function Board({boardSet}:{boardSet: number[][]}) {
 
   return (
     <table>

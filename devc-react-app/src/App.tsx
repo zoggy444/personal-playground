@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Board from "./Board.tsx"
 
-const WINCONDITION = 256;
+const WINCONDITION = 2048;
 
 function App() {
   const [status, setStatus] = useState("playing");
   const [boardSet, setBoardSet] = useState([
-    [0, 2, 0, 2],
+    [0, 2, 2, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
@@ -22,7 +22,7 @@ function App() {
     };
   }); // No dependency array : run this every render
 
-  const keyDownHandler = function (e) {
+  const keyDownHandler = function (e:KeyboardEvent) {
     // don't listen to keys after player looses
     // player can keep playing after winning to reach a higher score
     if (status != 'lost') {
@@ -124,11 +124,11 @@ function App() {
     if (hasSlided) endTurn(newBoardSet);
   };
 
-  const endTurn = function (newBoardSet) {
-    const maxValue = Math.max(...[].concat(...newBoardSet));
+  const endTurn = function (newBoardSet:number[][]) {
+    const maxValue = Math.max(...[0].concat(...newBoardSet));
     if (status != 'won' && maxValue >= WINCONDITION) setStatus('won');
     // a wild number appears...
-    const numberAdded = addNewNumber(newBoardSet);
+    addNewNumber(newBoardSet);
     // player looses if board can't be slided and they haven't already won
     if (!canSlideAny(newBoardSet) && status != "won") setStatus('lost');
     setBoardSet(newBoardSet);
@@ -158,7 +158,7 @@ function App() {
 /**
  * Checks if at least one line can be slided.
  */
-function canSlideAny(m){
+function canSlideAny(m:number[][]) {
   if (canSlide(m,true,true)) return true;
   if (canSlide(m,true,false)) return true;
   if (canSlide(m,false,true)) return true;
@@ -169,20 +169,14 @@ function canSlideAny(m){
 /**
  * Checks if at least one line can be slided.
  */
-function canSlide(m, horizontally=true, reverse=false) {
+function canSlide(m:number[][], horizontally=true, reverse=false) {
   if (horizontally) {
     for (let i=0; i<m.length; i++) {
-      if (canSlideLine(m[i], reverse)) {
-        console.log("can slide !",horizontally,reverse,i);
-        return true;
-      }
+      if (canSlideLine(m[i], reverse)) return true;
     }
   }else{
-    for (let i=0; i<m[0].length; i++) {
-      if (canSlideLine(m.map(r=>r[i]), reverse)) {
-        console.log("can slide !",horizontally,reverse,i);
-        return true;
-      }
+    for (let j=0; j<m[0].length; j++) {
+      if (canSlideLine(m.map(r=>r[j]), reverse)) return true;
     }
   }
   return false;
@@ -191,7 +185,7 @@ function canSlide(m, horizontally=true, reverse=false) {
 /**
  * Checks if this line can be slided.
  */
-function canSlideLine(line, reverse = false) {
+function canSlideLine(line:number[], reverse = false) {
   if (isZero(line)) return false;
   let l = reverse ? line.slice().reverse() : line.slice();
   // check if all numbers are already slided
@@ -200,27 +194,26 @@ function canSlideLine(line, reverse = false) {
   }
   // they are not, line can be slided !
   if (!isFull(l)) {
-    console.log("can slide for space", l);
     return true
   }
   // tail is full, check if their are equal numbers
   let i = 1;
   while (i < l.length) {
     // two numbers equals, can be merged !
-    if (l[i] == l[i-1]){
-    console.log("can slide for merge", l);
-    return true
-  }
+    if (l[i] == l[i-1]) return true;
+    i++;
   }
   return false;
 }
 
 /**
- * Does the actual sliding of numbers in an array. Recursive.
+ * Does the actual sliding of numbers in an array.
  */
-function slideLine(line, reverse = false) {
-  // pulls all numbers to the right
-  function pull(l) {
+function slideLine(line:number[], reverse=false) {
+  /** 
+   * Pulls all numbers to the right. All zeros are moved to the end.
+   */
+  function pull(l:number[]):number[] {
     if (l.length == 1) return l;
     let iEnd = l.length - 1;
     let head = l.slice(0, iEnd);
@@ -236,8 +229,10 @@ function slideLine(line, reverse = false) {
     }
     return pull(head).concat([tail]);
   }
-  // merges equal numbers
-  function merge(l) {
+  /**
+   * Merges equal numbers. Leaves a 0 in the place of the merged number.
+   */
+  function merge(l:number[]) {
     let iEnd = l.length - 1;
     while (iEnd >= 1) {
       if (l[iEnd] == l[iEnd - 1]) {
@@ -266,11 +261,11 @@ function slideLine(line, reverse = false) {
  * Replaces a zero with either a 2 or a 4 in a matrix
  * @returns true if a number is added, false if there is no room
  */
-function addNewNumber(values) {
-  let coords = getNextCoords(values);
+function addNewNumber(boardSet:number[][]) {
+  let coords = getNextCoords(boardSet);
   if (!coords) return false;
   let newNumber = Math.random() > 0.5 ? 4 : 2;
-  values[coords[0]][coords[1]] = newNumber;
+  boardSet[coords[0]][coords[1]] = newNumber;
   return true;
 }
 
@@ -278,8 +273,8 @@ function addNewNumber(values) {
  * Finds the coordinates for the next number to appear
  * @returns coordinates or undefined if there is no room
  */
-function getNextCoords(values) {
-  const nbSlots = values
+function getNextCoords(boardSet:number[][]) {
+  const nbSlots = boardSet
     .map((r) => r.reduce((total, x) => (x == 0 ? total + 1 : total), 0))
     .reduce((total, x) => total + x, 0);
 
@@ -291,7 +286,7 @@ function getNextCoords(values) {
 
   for (let i = 0; i < 4; i++) {
     for (let j = 0; j < 4; j++) {
-      if (values[i][j] == 0) {
+      if (boardSet[i][j] == 0) {
         if (count == position) {
           coords = [i, j];
         }
@@ -305,7 +300,7 @@ function getNextCoords(values) {
 /**
  * checks if at least one cell is not 0
  */
-function isZero(a) {
+function isZero(a:number[]) {
   for (let i = 0; i < a.length; i++) {
     if (a[i] != 0) return false;
   }
@@ -315,7 +310,7 @@ function isZero(a) {
 /**
  * Checks if at least one cell is 0
  */
-function isFull(a) {
+function isFull(a:number[]) {
   for (let i = 0; i < a.length; i++) {
     if (a[i] == 0) return false;
   }
@@ -326,7 +321,7 @@ function isFull(a) {
  * Check for equality.
  * We assume both arrays are of same length.
  */
-function areEquals(a1, a2) {
+function areEquals(a1:number[], a2:number[]) {
   for (let i=0; i<a1.length; i++) {
     if (a1[i] != a2[i]) return false;
   }
