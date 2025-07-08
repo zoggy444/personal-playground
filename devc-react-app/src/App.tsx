@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import Board from "./Board.tsx"
+import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
 
 const WINCONDITION = 2048;
 
@@ -148,9 +149,14 @@ function App() {
   return (
     <>
       <Board boardSet={boardSet}/>
-      {status == 'won' && <div>GAGNÉ!!!</div>}
-      {status == 'lost' && <div>PERDU</div>}
-      <button name="restart" onClick={handleNewGame}>NEW GAME</button>
+      {status == 'won' && <div>YOU WON!!!</div>}
+      {status == 'lost' && <div>YOU LOST...</div>}
+      {status == 'won' || status == 'lost' ? (
+        <PrimaryButton onClick={handleNewGame}>NEW GAME</PrimaryButton>
+      ) : (
+        <DefaultButton onClick={handleNewGame}>NEW GAME</DefaultButton>
+      )}
+      <p>Use keyboard arrows to play</p>
     </>
   );
 }
