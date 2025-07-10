@@ -1,7 +1,6 @@
 import './Components.css';
 import { Stack } from '@fluentui/react/lib/Stack';
 
-
 function Board({boardSet}:{boardSet: number[][]}) {
 
   return (
@@ -40,7 +39,6 @@ function Board({boardSet}:{boardSet: number[][]}) {
         </Stack>
       ))}
     </>
-    
   );
 }
 
