@@ -13,10 +13,10 @@ export default {
     colorsEnabled: true,
     snippetInterface: "async-await"
   },
-  require: [
-    "src/tests/step-definitions/*.ts"
+  import: [
+    "src/tests/step_definitions/*.ts"
   ],
-  requireModule: [
-    "ts-node/register"
+  importModule: [
+    "tsx"
   ]
 };

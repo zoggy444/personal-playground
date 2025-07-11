@@ -1,0 +1,140 @@
+[
+  {
+    "description": "",
+    "elements": [
+      {
+        "description": "",
+        "id": "new-game-button;new-game-button-is-visible",
+        "keyword": "Scenario",
+        "line": 3,
+        "name": "New Game button is visible",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 207708910
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 4,
+            "name": "I am on the game board page",
+            "match": {
+              "location": "src/tests/step_definitions/new_game.ts:30"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3230493268
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 5,
+            "name": "I should see a 'NEW GAME' button",
+            "match": {
+              "location": "src/tests/step_definitions/new_game.ts:37"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 5001818731,
+              "error_message": "Error: function timed out, ensure the promise resolves within 5000 milliseconds\n    at Timeout.<anonymous> (/workspaces/2048/devc-react-app/node_modules/@cucumber/cucumber/src/time.ts:52:14)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 6,
+            "name": "the button should be enabled",
+            "match": {
+              "location": "src/tests/step_definitions/new_game.ts:46"
+            },
+            "result": {
+              "status": "skipped",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 43616622
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      },
+      {
+        "description": "",
+        "id": "new-game-button;user-clicks-on-the-new-game-button",
+        "keyword": "Scenario",
+        "line": 8,
+        "name": "User clicks on the New Game button",
+        "steps": [
+          {
+            "keyword": "Before",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 151519754
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 9,
+            "name": "I am on the game board page",
+            "match": {
+              "location": "src/tests/step_definitions/new_game.ts:30"
+            },
+            "result": {
+              "status": "passed",
+              "duration": 3160444617
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 10,
+            "name": "I click on the 'NEW GAME' button",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 11,
+            "name": "the game board should reset to its initial state",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "keyword": "After",
+            "hidden": true,
+            "result": {
+              "status": "passed",
+              "duration": 32812829
+            }
+          }
+        ],
+        "tags": [],
+        "type": "scenario"
+      }
+    ],
+    "id": "new-game-button",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "New Game Button",
+    "tags": [],
+    "uri": "src/tests/features/new_game.feature"
+  }
+]
