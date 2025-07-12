@@ -13,8 +13,9 @@
             "keyword": "Before",
             "hidden": true,
             "result": {
-              "status": "passed",
-              "duration": 207708910
+              "status": "failed",
+              "duration": 5008169372,
+              "error_message": "Error: function timed out, ensure the promise resolves within 5000 milliseconds\n    at Timeout.<anonymous> (/workspaces/2048/devc-react-app/node_modules/@cucumber/cucumber/src/time.ts:52:14)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"
             }
           },
           {
@@ -23,11 +24,11 @@
             "line": 4,
             "name": "I am on the game board page",
             "match": {
-              "location": "src/tests/step_definitions/new_game.ts:30"
+              "location": "src/tests/step_definitions/new_game.ts:63"
             },
             "result": {
-              "status": "passed",
-              "duration": 3230493268
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
@@ -36,12 +37,11 @@
             "line": 5,
             "name": "I should see a 'NEW GAME' button",
             "match": {
-              "location": "src/tests/step_definitions/new_game.ts:37"
+              "location": "src/tests/step_definitions/new_game.ts:70"
             },
             "result": {
-              "status": "failed",
-              "duration": 5001818731,
-              "error_message": "Error: function timed out, ensure the promise resolves within 5000 milliseconds\n    at Timeout.<anonymous> (/workspaces/2048/devc-react-app/node_modules/@cucumber/cucumber/src/time.ts:52:14)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
@@ -50,7 +50,7 @@
             "line": 6,
             "name": "the button should be enabled",
             "match": {
-              "location": "src/tests/step_definitions/new_game.ts:46"
+              "location": "src/tests/step_definitions/new_game.ts:79"
             },
             "result": {
               "status": "skipped",
@@ -62,7 +62,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 43616622
+              "duration": 44232973
             }
           }
         ],
@@ -80,8 +80,9 @@
             "keyword": "Before",
             "hidden": true,
             "result": {
-              "status": "passed",
-              "duration": 151519754
+              "status": "failed",
+              "duration": 5002035488,
+              "error_message": "Error: function timed out, ensure the promise resolves within 5000 milliseconds\n    at Timeout.<anonymous> (/workspaces/2048/devc-react-app/node_modules/@cucumber/cucumber/src/time.ts:52:14)\n    at listOnTimeout (node:internal/timers:588:17)\n    at process.processTimers (node:internal/timers:523:7)"
             }
           },
           {
@@ -90,11 +91,11 @@
             "line": 9,
             "name": "I am on the game board page",
             "match": {
-              "location": "src/tests/step_definitions/new_game.ts:30"
+              "location": "src/tests/step_definitions/new_game.ts:63"
             },
             "result": {
-              "status": "passed",
-              "duration": 3160444617
+              "status": "skipped",
+              "duration": 0
             }
           },
           {
@@ -122,7 +123,7 @@
             "hidden": true,
             "result": {
               "status": "passed",
-              "duration": 32812829
+              "duration": 41911288
             }
           }
         ],

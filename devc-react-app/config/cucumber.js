@@ -13,6 +13,9 @@ export default {
     colorsEnabled: true,
     snippetInterface: "async-await"
   },
+  stepDefinitions : [
+    "src/tests/step_definitions/*.ts"
+  ],
   import: [
     "src/tests/step_definitions/*.ts"
   ],

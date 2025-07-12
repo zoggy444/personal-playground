@@ -7,6 +7,16 @@ import {
   } from "@cucumber/cucumber";
 
 import { Page, Browser, chromium, expect } from "@playwright/test";
+import * as OTPAuth from "otpauth"
+
+const totp = new OTPAuth.TOTP({
+  issuer: "Raccoon",
+  label: "GitHub",
+  algorithm: "SHA1",
+  digits: 6,
+  period: 30,
+  secret: process.env.GITHUB_OTP,
+})
 
 let browser: Browser;
 let page: Page;
@@ -15,15 +25,38 @@ Before(async function () {
   // Initialisation du navigateur avant chaque scénario
   browser = await chromium.launch();
   page = await browser.newPage();
-  // Vérifie si on est sur la page de login GitHub
-  if (page.url().includes("github.com/login")) {
-    await page.fill('input[name="login"]', process.env.GITHUB_USER || "your-username");
-    await page.fill('input[name="password"]', process.env.GITHUB_PASSWORD || "your-password");
+
+  await page.goto("https://github.com/")
+  await page.getByRole("link", { name: "Sign in" }).click()
+  await page.getByLabel("Username or email address").click()
+  await page
+   .getByLabel("Username or email address")
+   .fill(process.env.GITHUB_USER)
+  await page.getByLabel("Username or email address").press("Tab")
+  await page.getByLabel("Password").fill(process.env.GITHUB_PASSWORD)
+  await page.getByRole("button", { name: "Sign in" }).click()
+  await page.getByPlaceholder("XXXXXX").click()
+  await page.getByPlaceholder("XXXXXX").fill(totp.generate())
+  //await expect(page).toHaveURL("https://github.com")
+  await page.screenshot({ path: "home.png" })
+
+  await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
+  //console.log(page.url());
+  //console.log(await page.content());
+  await page.screenshot({ path: 'debug-before-login.png', fullPage: true });
+  // Vérifie si l'input existe
+  const loginInput = page.locator('input[name="login"]');
+  if (await loginInput.count() > 0) {
+    console.log("L'input login est présent sur la page.");
+    await page.fill('input[name="login"]', process.env.GITHUB_USER);
+    await page.fill('input[name="password"]', process.env.GITHUB_PASSWORD);
     await page.click('input[name="commit"]');
     await page.screenshot({ path: 'debug-login.png', fullPage: true });
 
     // Attends la redirection vers ton appli
     await page.waitForURL(/app\.github\.dev/);
+  } else {
+    console.log("L'input login n'est pas présent sur la page.");
   }
 });
 
