@@ -40,7 +40,7 @@ function Board({boardSet}:{boardSet: number[][]}) {
                 alignItems: 'center',
                 boxShadow: `0px 0px 10px 5px black`,
                 backgroundColor: cell === 0 ? 'lightgray' : `hsl(${60 - ((levels[cell] - 1) * (60 / 11))}, 100%, ${80 - ((levels[cell] - 1) * (70 / 11))}%)`,
-                color: levels[cell] <= 8 ? 'black' : 'white',
+                color: levels[cell] <= 7 ? 'black' : 'white',
                 display: 'flex',
                 height: 50,
                 justifyContent: 'center',

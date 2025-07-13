@@ -26,49 +26,43 @@ Before(async function () {
   browser = await chromium.launch();
   page = await browser.newPage();
 
-  await page.goto("https://github.com/")
-  await page.getByRole("link", { name: "Sign in" }).click()
+  //await page.goto("https://github.com/")
+  await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
+  await page.screenshot({ path: "src/tests/screenshots/before-1.png" })
+  await page.waitForLoadState('domcontentloaded')
+  await page.screenshot({ path: "src/tests/screenshots/before-2.png" })
+  //await page.getByRole("link", { name: "Sign in" }).click()
   await page.getByLabel("Username or email address").click()
   await page
    .getByLabel("Username or email address")
    .fill(process.env.GITHUB_USER)
+  await page.screenshot({ path: "src/tests/screenshots/before-3.png" })
   await page.getByLabel("Username or email address").press("Tab")
   await page.getByLabel("Password").fill(process.env.GITHUB_PASSWORD)
-  await page.getByRole("button", { name: "Sign in" }).click()
+  await page.screenshot({ path: "src/tests/screenshots/before-4.png" })
+  await page.getByRole("button", { name: "Sign in", "exact": true }).click()
   await page.getByPlaceholder("XXXXXX").click()
+  await page.screenshot({ path: "src/tests/screenshots/before-5.png" })
   await page.getByPlaceholder("XXXXXX").fill(totp.generate())
+  await page.screenshot({ path: "src/tests/screenshots/before-6.png" })
   //await expect(page).toHaveURL("https://github.com")
-  await page.screenshot({ path: "home.png" })
+  //await expect(page).toHaveURL("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/")
 
-  await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
+  //await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
   //console.log(page.url());
   //console.log(await page.content());
-  await page.screenshot({ path: 'debug-before-login.png', fullPage: true });
-  // Vérifie si l'input existe
-  const loginInput = page.locator('input[name="login"]');
-  if (await loginInput.count() > 0) {
-    console.log("L'input login est présent sur la page.");
-    await page.fill('input[name="login"]', process.env.GITHUB_USER);
-    await page.fill('input[name="password"]', process.env.GITHUB_PASSWORD);
-    await page.click('input[name="commit"]');
-    await page.screenshot({ path: 'debug-login.png', fullPage: true });
-
-    // Attends la redirection vers ton appli
-    await page.waitForURL(/app\.github\.dev/);
-  } else {
-    console.log("L'input login n'est pas présent sur la page.");
-  }
 });
 
 Given("I am on the game board page", async function () {
 
-  await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
-  await page.screenshot({ path: 'debug.png', fullPage: true });
+  //await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
+  await page.screenshot({ path: 'src/tests/screenshots/given-1-1.png', fullPage: true });
 
 });
 
 Then('I should see a {string} button', async function (buttonText) {
   console.log("Checking for button: " + buttonText);
+  await page.screenshot({ path: 'src/tests/screenshots/button-check.png', fullPage: true });
   const selector = `button:has-text("${buttonText}")`;
   await page.waitForSelector(selector, { timeout: 10000 }); // Attend que le bouton soit présent
   const button = page.locator(selector);
