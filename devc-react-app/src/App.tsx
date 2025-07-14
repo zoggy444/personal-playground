@@ -148,6 +148,7 @@ function App() {
   /* JSX */
   return (
     <>
+      <h1>2048</h1>
       <Board boardSet={boardSet}/>
       {status == 'won' && <div>YOU WON!!!</div>}
       {status == 'lost' && <div>YOU LOST...</div>}

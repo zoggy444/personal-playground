@@ -28,6 +28,7 @@ function Board({boardSet}:{boardSet: number[][]}) {
           disableShrink={true}
           verticalAlign='center'
           horizontalAlign='center'
+          className='game-board'
         >
           {row.map((cell, cellIndex) => (
             <Stack
