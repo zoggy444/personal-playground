@@ -9,6 +9,7 @@ Feature: Gameplay
     * If no tile can move in any direction, the game is over.
 
   Rule: The player can move tiles using arrow keys.
+
     Scenario: Basic Arrow Right
       Given the board is
         | 2 | 0 | 4 | 0 |
@@ -66,6 +67,7 @@ Feature: Gameplay
       And a new 2 or 4 appears on the board
 
   Rule: Tiles with the same number merge when they collide.
+
     Scenario: Arrow right with merge
       Given the board is
         | 2 | 2 | 4 | 0 |
@@ -123,6 +125,7 @@ Feature: Gameplay
       And a new 2 or 4 appears on the board
 
   Rule: If no tile can move in the direction of the arrow key pressed, no new tile appears.
+
     Scenario: No movement with arrow right
       Given the board is
         | 4 | 2 | 4 | 2 |
@@ -164,6 +167,7 @@ Feature: Gameplay
       And no new tile appears on the board
   
   Rule: If no tile can move in any direction, the game is over.
+  
     Scenario: Game over
       Given the board is
         | 0 | 8 | 64 | 32 |

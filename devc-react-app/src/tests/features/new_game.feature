@@ -8,4 +8,8 @@ Feature: New Game Button
   Scenario: User clicks on the New Game button
     Given I am on the game board page
     When I click on the 'NEW GAME' button
-    Then the game board should reset to its initial state
+    Then the game board should be
+      | 0 | 2 | 2 | 0 |
+      | 0 | 0 | 0 | 0 |
+      | 0 | 0 | 0 | 0 |
+      | 0 | 0 | 0 | 0 |

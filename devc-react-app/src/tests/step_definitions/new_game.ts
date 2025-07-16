@@ -2,67 +2,14 @@ import {
     Given,
     When,
     Then,
-    BeforeAll,
-    AfterAll,
   } from "@cucumber/cucumber";
 
-import { Page, Browser, BrowserContext, chromium, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
 import * as OTPAuth from "otpauth"
 
-function generateOTP(secret: string) {
-  const totp = new OTPAuth.TOTP({
-    secret: secret,
-    digits: 6,
-    algorithm: "sha1",
-    period: 30,
-  });
+import global from "../support/hooks.js"
 
-  return totp.generate();
-}
-
-let browser: Browser;
-let page: Page;
-let browserContext: BrowserContext;
-
-
-BeforeAll( {timeout: 20 * 1000}, async function () {
-  // Initialisation du navigateur avant chaque scénario
-  browser = await chromium.launch();
-  browserContext = await browser.newContext({ recordVideo: { dir: 'src/tests/videos/' } });
-  browserContext.setDefaultTimeout(20000); // Timeout de 20 secondes pour les actions
-  browserContext.setDefaultNavigationTimeout(20000); // Timeout de 20 secondes pour la navigation
-  page = await browser.newPage({ recordVideo: { dir: 'src/tests/videos/' } });
-
-  //await page.goto("https://github.com/")
-  await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
-  await page.screenshot({ path: "src/tests/screenshots/before-1.png" })
-  await page.waitForLoadState('domcontentloaded')
-  await page.screenshot({ path: "src/tests/screenshots/before-2.png" })
-  //await page.getByRole("link", { name: "Sign in" }).click()
-  await page.getByLabel("Username or email address").click()
-  await page
-   .getByLabel("Username or email address")
-   .fill(process.env.GITHUB_USER)
-  await page.screenshot({ path: "src/tests/screenshots/before-3.png" })
-  await page.getByLabel("Username or email address").press("Tab")
-  await page.getByLabel("Password").fill(process.env.GITHUB_PASSWORD)
-  await page.screenshot({ path: "src/tests/screenshots/before-4.png" })
-  await page.getByRole("button", { name: "Sign in", "exact": true }).click()
-  await page.getByPlaceholder("XXXXXX").click()
-  await page.screenshot({ path: "src/tests/screenshots/before-5.png" })
-  const otp = generateOTP(process.env.GITHUB_OTP);
-  console.log("Generated OTP: " + otp);
-  await page.getByPlaceholder("XXXXXX").fill(otp)
-  await page.screenshot({ path: "src/tests/screenshots/before-6.png" })
-  await page.waitForLoadState('load', {timeout: 20000});
-  await page.screenshot({ path: "src/tests/screenshots/before-7.png" })
-  //await expect(page).toHaveURL("https://github.com")
-  //await expect(page).toHaveURL("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/")
-
-  //await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
-  //console.log(page.url());
-  //console.log(await page.content());
-});
+let page = global.page;
 
 Given("I am on the game board page", async function () {
   console.log("Checking for header: 2048");
@@ -105,19 +52,32 @@ Then('the button should be enabled', async function () {
   await expect(button).toBeEnabled();
 });
 
-Then('the game board should reset to its initial state', async function () {
-  // Vérifie que le tableau de jeu est dans son état initial
-  const gameBoard = page.locator('.game-board'); // Remplacez par le sélecteur approprié pour votre tableau de jeu
-  console.log(await gameBoard.count());
-  await page.screenshot({ path: 'src/tests/screenshots/then-game-board-reset.png', fullPage: true });
-}); 
-
-// Ferme le navigateur après chaque scénario
-AfterAll(async function () {
-  if (browserContext) {
-    await browserContext.close();
-  }
-  if (browser) {
-    await browser.close();
-  }
+Then('the game board should be', {timeout: 20 * 1000},  async function (dataTable) {
+  const table = dataTable.raw();
+  global.isBoardCorrect(table, page);
+  /*for (let i=0; i < table.length; i++) {
+    const row = table[i];
+    for (let j=0; j < row.length; j++) {
+      const cellSelector = `[id="${i}-${j}"]`;
+      const cellValue = row[j].trim();
+      const cell = page.locator(cellSelector);
+      
+      //console.log(`Checking cell at (${i}, ${j}): ${cellValue}`);
+      //console.log(await cell.count());
+      //console.log(await cell.textContent());
+      await cell.count();
+      let expectedText;
+      if (cellValue === '0') {
+        expectedText = '';
+        //await expect(cell).toHaveText('', { timeout: 5000 });
+      } else if (cellValue === '*') {
+        expectedText = /|2|4/;
+        //await expect(cell).toHaveText(/|2|4/, { timeout: 5000 });
+      } else {
+        expectedText = cellValue;
+        //await expect(cell).toHaveText(cellValue, { timeout: 5000 });
+      }
+      await expect(cell).toHaveText(expectedText, { timeout: 5000 });
+    }
+  }*/
 });

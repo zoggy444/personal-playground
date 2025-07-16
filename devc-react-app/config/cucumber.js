@@ -17,7 +17,8 @@ export default {
     "src/tests/step_definitions/*.ts"
   ],
   import: [
-    "src/tests/step_definitions/*.ts"
+    "src/tests/step_definitions/*.ts",
+    "src/tests/support/*.ts"
   ],
   importModule: [
     "tsx"

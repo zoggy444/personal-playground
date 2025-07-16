@@ -37,7 +37,7 @@ function Board({boardSet}:{boardSet: number[][]}) {
               horizontalAlign='center'
               verticalAlign='center'
             >
-              <span style={{
+              <span id={`${rowIndex}-${cellIndex}`} style={{
                 alignItems: 'center',
                 boxShadow: `0px 0px 10px 5px black`,
                 backgroundColor: cell === 0 ? 'lightgray' : `hsl(${60 - ((levels[cell] - 1) * (60 / 11))}, 100%, ${80 - ((levels[cell] - 1) * (70 / 11))}%)`,
