@@ -1,5 +1,6 @@
 import {
     BeforeAll,
+    Then,
     AfterAll,
   } from "@cucumber/cucumber";
 
@@ -10,7 +11,7 @@ type Global = {
   browser: Browser;
   page: Page;
   browserContext: BrowserContext;
-  isBoardCorrect: (expd: string[][], p: Page) => void;
+  isBoardCorrect: (expd: string[][]) => void;
 };
 
 function generateOTP(secret: string) {
@@ -28,8 +29,10 @@ var browser: Browser = await chromium.launch();
 var browserContext: BrowserContext = await browser.newContext({ recordVideo: { dir: 'src/tests/videos/' } });
 var page: Page = await browser.newPage({ recordVideo: { dir: 'src/tests/videos/' } });
 
-async function isBoardCorrect(expected: string[][], page: Page) {
+async function isBoardCorrect(expected: string[][]) {
   // Vérifie si le tableau de jeu est correct
+  console.log("Checking game board...");
+  //console.log(page);
   for (let i=0; i < expected.length; i++) {
     const row = expected[i];
     for (let j=0; j < row.length; j++) {
@@ -37,7 +40,8 @@ async function isBoardCorrect(expected: string[][], page: Page) {
       const cellValue = row[j].trim();
       const cell = page.locator(cellSelector);
 
-      await cell.count();
+      //await cell.count();
+      console.log(page.isClosed());
       let expectedText;
       if (cellValue === '0') {
         expectedText = '';
@@ -47,10 +51,10 @@ async function isBoardCorrect(expected: string[][], page: Page) {
         expectedText = cellValue;
       }
       await expect(cell).toHaveText(expectedText, { timeout: 5000 })
-      .catch((error) => {
+      /*.catch((error) => {
         console.error(`Error in cell (${i}, ${j}): Expected "${expectedText}", but found "${cell.textContent()}"`);
         throw error; // Rejette l'erreur pour arrêter l'exécution des tests
-      });
+      })*/;
     }
   }
 }
@@ -110,6 +114,36 @@ BeforeAll( {timeout: 20 * 1000}, async function () {
   //await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
   //console.log(page.url());
   //console.log(await page.content());
+});
+
+Then('the game board should be', {timeout: 20 * 1000},  async function (dataTable) {
+  const table = dataTable.raw();
+  //global.isBoardCorrect(table);
+  for (let i=0; i < table.length; i++) {
+    const row = table[i];
+    for (let j=0; j < row.length; j++) {
+      const cellSelector = `[id="${i}-${j}"]`;
+      const cellValue = row[j].trim();
+      const cell = page.locator(cellSelector);
+      
+      //console.log(`Checking cell at (${i}, ${j}): ${cellValue}`);
+      //console.log(await cell.count());
+      //console.log(await cell.textContent());
+      await cell.count();
+      let expectedText;
+      if (cellValue === '0') {
+        expectedText = '';
+        //await expect(cell).toHaveText('', { timeout: 5000 });
+      } else if (cellValue === '*') {
+        expectedText = /|2|4/;
+        //await expect(cell).toHaveText(/|2|4/, { timeout: 5000 });
+      } else {
+        expectedText = cellValue;
+        //await expect(cell).toHaveText(cellValue, { timeout: 5000 });
+      }
+      await expect(cell).toHaveText(expectedText, { timeout: 5000 });
+    }
+  }
 });
 
 // Ferme le navigateur une fois tous les scénarios joués

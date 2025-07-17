@@ -5,7 +5,7 @@ import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
 
 const WINCONDITION = 2048;
 
-function App() {
+function App({initBoardSet} : {initBoardSet?: number[][]}) {
   const [status, setStatus] = useState("playing");
   const [boardSet, setBoardSet] = useState([
     [0, 2, 2, 0],
@@ -13,6 +13,12 @@ function App() {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ]);
+
+  useEffect(() => {
+    if (initBoardSet) {
+      setBoardSet(initBoardSet);
+    }
+  }, []);  // empty dependency array : run this only once on mount
 
   // Add event listeners
   useEffect(() => {

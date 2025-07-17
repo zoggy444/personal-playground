@@ -5,31 +5,30 @@ import {
   } from "@cucumber/cucumber";
 
 import { expect } from "@playwright/test";
-import * as OTPAuth from "otpauth"
 
 import global from "../support/hooks.js"
 
 let page = global.page;
 
 Given("I am on the game board page", async function () {
-  console.log("Checking for header: 2048");
+  //console.log("Checking for header: 2048");
   //await page.goto("https://potential-barnacle-rp4wgj5gv9wfppg-3000.app.github.dev/");
   await page.screenshot({ path: 'src/tests/screenshots/given-1-1.png', fullPage: true });
   const selector = `h1:has-text("2048")`;
   await page.waitForSelector(selector, { timeout: 10000 }); // Attend que le bouton soit présent
   const h1 = page.locator(selector);
-  console.log(await h1.count());
+  //console.log(await h1.count());
   await expect(h1).toBeVisible();
   await page.keyboard.press('ArrowLeft');
 });
 
 Then('I should see a {string} button', async function (buttonText) {
-  console.log("Checking for button: " + buttonText);
+  //console.log("Checking for button: " + buttonText);
   await page.screenshot({ path: 'src/tests/screenshots/then-button-check.png', fullPage: true });
   const selector = `button:has-text("${buttonText}")`;
   await page.waitForSelector(selector, { timeout: 10000 }); // Attend que le bouton soit présent
   const button = page.locator(selector);
-  console.log(await button.count());
+  //console.log(await button.count());
   await expect(button).toBeVisible();
 });
 
@@ -52,10 +51,10 @@ Then('the button should be enabled', async function () {
   await expect(button).toBeEnabled();
 });
 
-Then('the game board should be', {timeout: 20 * 1000},  async function (dataTable) {
+/*Then('the game board should be', {timeout: 20 * 1000},  async function (dataTable) {
   const table = dataTable.raw();
-  global.isBoardCorrect(table, page);
-  /*for (let i=0; i < table.length; i++) {
+  //global.isBoardCorrect(table);
+  for (let i=0; i < table.length; i++) {
     const row = table[i];
     for (let j=0; j < row.length; j++) {
       const cellSelector = `[id="${i}-${j}"]`;
@@ -79,5 +78,5 @@ Then('the game board should be', {timeout: 20 * 1000},  async function (dataTabl
       }
       await expect(cell).toHaveText(expectedText, { timeout: 5000 });
     }
-  }*/
-});
+  }
+});*/
