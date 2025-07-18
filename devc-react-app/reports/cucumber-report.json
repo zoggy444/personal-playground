@@ -1,0 +1,147 @@
+[
+  {
+    "description": "  Rules:\n    * The game board is a 4x4 grid.\n    * The player can move tiles using arrow keys.\n    * Tiles with the same number merge when they collide.\n    * A new tile (2 or 4) appears after each move.\n    * If no tile can move in the direction of the arrow key pressed, no new tile appears.\n    * If no tile can move in any direction, the game is over.",
+    "elements": [
+      {
+        "description": "",
+        "id": "gameplay;the-player-can-move-tiles-using-arrow-keys.;basic-arrow-right",
+        "keyword": "Scenario",
+        "line": 13,
+        "name": "Basic Arrow Right",
+        "steps": [
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "2",
+                      "0",
+                      "4",
+                      "0"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "0",
+                      "8",
+                      "0",
+                      "2"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "0",
+                      "0",
+                      "0",
+                      "0"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "8",
+                      "4",
+                      "0",
+                      "0"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Given ",
+            "line": 14,
+            "name": "the board is",
+            "match": {
+              "location": "src/tests/step_definitions/gameplay.ts:18"
+            },
+            "result": {
+              "status": "failed",
+              "duration": 6922929853,
+              "error_message": "Error: \u001b[31mTimed out 5000ms waiting for \u001b[39m\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m\n\nLocator: locator('[id=\"0-0\"]')\nExpected string: \u001b[32m\"2\"\u001b[39m\nReceived: <element(s) not found>\nCall log:\n\u001b[2m  - Expect \"to.have.text\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('[id=\"0-0\"]')\u001b[22m\n\n    at Proxy.<anonymous> (/workspaces/2048/devc-react-app/node_modules/playwright/lib/matchers/expect.js:221:24)\n    at World.<anonymous> (/workspaces/2048/devc-react-app/src/tests/step_definitions/gameplay.ts:61:26)"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 19,
+            "name": "I press the right arrow key",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [
+              {
+                "rows": [
+                  {
+                    "cells": [
+                      "*",
+                      "*",
+                      "2",
+                      "4"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "*",
+                      "*",
+                      "8",
+                      "2"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "*",
+                      "*",
+                      "*",
+                      "*"
+                    ]
+                  },
+                  {
+                    "cells": [
+                      "*",
+                      "*",
+                      "8",
+                      "4"
+                    ]
+                  }
+                ]
+              }
+            ],
+            "keyword": "Then ",
+            "line": 20,
+            "name": "the board should be",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 25,
+            "name": "a new 2 or 4 appears on the board",
+            "result": {
+              "status": "undefined",
+              "duration": 0
+            }
+          }
+        ],
+        "tags": [
+          {
+            "name": "@current",
+            "line": 12
+          }
+        ],
+        "type": "scenario"
+      }
+    ],
+    "id": "gameplay",
+    "line": 1,
+    "keyword": "Feature",
+    "name": "Gameplay",
+    "tags": [],
+    "uri": "src/tests/features/gameplay.feature"
+  }
+]

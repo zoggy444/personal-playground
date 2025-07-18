@@ -9,7 +9,7 @@ Feature: Gameplay
     * If no tile can move in any direction, the game is over.
 
   Rule: The player can move tiles using arrow keys.
-
+    @current
     Scenario: Basic Arrow Right
       Given the board is
         | 2 | 0 | 4 | 0 |

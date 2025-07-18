@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "cucumber": "tsx node_modules/.bin/cucumber-js --config ./config/cucumber.js"
+    "cucumber": "tsx node_modules/.bin/cucumber-js --config ./config/cucumber.js --tags @current"
   },
   "dependencies": {
     "@fluentui/react": "^8.123.1",

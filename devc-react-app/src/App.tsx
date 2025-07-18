@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Board from "./Board.tsx"
 import { DefaultButton, PrimaryButton } from '@fluentui/react/lib/Button';
+import type { json } from 'stream/consumers';
 
 const WINCONDITION = 2048;
 
@@ -13,9 +14,13 @@ function App({initBoardSet} : {initBoardSet?: number[][]}) {
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ]);
+  const [boardEditText, SetBoardEditText] = useState("[[0, 2, 2, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]");
 
   useEffect(() => {
     if (initBoardSet) {
+      const boardString = JSON.stringify(initBoardSet);
+      console.log("Setting board to", boardString);
+      SetBoardEditText(boardString);
       setBoardSet(initBoardSet);
     }
   }, []);  // empty dependency array : run this only once on mount
@@ -32,7 +37,7 @@ function App({initBoardSet} : {initBoardSet?: number[][]}) {
   const keyDownHandler = function (e:KeyboardEvent) {
     // don't listen to keys after player looses
     // player can keep playing after winning to reach a higher score
-    if (status != 'lost') {
+    if (status != 'lost' && status != 'editing') {
       switch (e.key) {
         case 'ArrowRight':
           handleSlideRight();
@@ -142,28 +147,71 @@ function App({initBoardSet} : {initBoardSet?: number[][]}) {
   };
 
   const handleNewGame= function () {
-    setStatus("playing");
-    setBoardSet([
+    const newBoardSet = [
       [0, 2, 2, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-    ]);
+    ];
+    setStatus("playing");
+    setBoardSet(newBoardSet);
+    SetBoardEditText(JSON.stringify(newBoardSet));
+  }
+
+  const handleEditBoard = function () {
+    setStatus("editing");
+    SetBoardEditText(JSON.stringify(boardSet));
+  }
+
+  const handleSaveBoard = function () {
+    let newBoardSet:number[][];
+    try {
+      newBoardSet = JSON.parse((document.querySelector('textarea') as HTMLTextAreaElement).value);
+      if (newBoardSet.length != 4 || newBoardSet[0].length != 4) {
+        throw new Error("Invalid board size - must be 4x4 - got " + newBoardSet.length + "x" + newBoardSet[0].length);
+      }
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          if (typeof newBoardSet[i][j] != 'number') {
+            throw new Error("Invalid board content at " + i + "," + j);
+          } else if ([0,2,4,8,16,32,64,128,256,512,1024,2048].indexOf(newBoardSet[i][j]) == -1) {
+            throw new Error("Invalid board content at " + i + "," + j + ": " + newBoardSet[i][j] + "must be a power of 2 or 0");
+          }
+        }
+      }
+    }catch (e) {
+      alert(e.message);
+      return;
+    }
+    // if the board is valid, we can set it
+    setBoardSet(newBoardSet);
+    setStatus("playing");
   }
 
   /* JSX */
   return (
     <>
       <h1>2048</h1>
-      <Board boardSet={boardSet}/>
-      {status == 'won' && <div>YOU WON!!!</div>}
-      {status == 'lost' && <div>YOU LOST...</div>}
-      {status == 'won' || status == 'lost' ? (
-        <PrimaryButton onClick={handleNewGame}>NEW GAME</PrimaryButton>
+      {status != 'editing' ? (
+        <>
+          <Board boardSet={boardSet}/>
+          {status == 'won' && <div>YOU WON!!!</div>}
+          {status == 'lost' && <div>YOU LOST...</div>}
+          {status == 'won' || status == 'lost' ? (
+            <PrimaryButton onClick={handleNewGame}>NEW GAME</PrimaryButton>
+          ) : (
+            <DefaultButton onClick={handleNewGame}>NEW GAME</DefaultButton>
+          )}
+          <p>Use keyboard arrows to play</p>
+          <DefaultButton onClick={handleEditBoard}><i>edit board</i></DefaultButton>
+        </>
       ) : (
-        <DefaultButton onClick={handleNewGame}>NEW GAME</DefaultButton>
+        <>
+          <textarea value={boardEditText} onChange={e => SetBoardEditText(e.target.value)}></textarea>
+          <PrimaryButton onClick={() => handleSaveBoard()}>SAVE</PrimaryButton>
+          <DefaultButton onClick={() => setStatus("playing")}>CANCEL</DefaultButton>
+        </>
       )}
-      <p>Use keyboard arrows to play</p>
     </>
   );
 }
