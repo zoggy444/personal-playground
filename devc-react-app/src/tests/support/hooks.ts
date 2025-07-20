@@ -12,6 +12,8 @@ type Global = {
   page: Page;
   browserContext: BrowserContext;
   isBoardCorrect: (expd: string[][]) => void;
+  newTile: {number?: number, position?: number[][]}[];
+  board: number[][];
 };
 
 function generateOTP(secret: string) {
@@ -31,7 +33,7 @@ var page: Page = await browser.newPage({ recordVideo: { dir: 'src/tests/videos/'
 
 async function isBoardCorrect(expected: string[][]) {
   // Vérifie si le tableau de jeu est correct
-  console.log("Checking game board...");
+  console.log("Checking board...");
   //console.log(page);
   for (let i=0; i < expected.length; i++) {
     const row = expected[i];
@@ -64,6 +66,8 @@ var global: Global = {
   page: page,
   browserContext: browserContext,
   isBoardCorrect: isBoardCorrect,
+  newTile: [],
+  board: [],
 };
 
 function hasExportedCredentials() {
@@ -116,11 +120,13 @@ BeforeAll( {timeout: 20 * 1000}, async function () {
   //console.log(await page.content());
 });
 
-Then('the game board should be', {timeout: 20 * 1000},  async function (dataTable) {
+Then('the board should be', {timeout: 20 * 1000},  async function (dataTable) {
   const table = dataTable.raw();
+  let board:number[][] = [];
   //global.isBoardCorrect(table);
   for (let i=0; i < table.length; i++) {
     const row = table[i];
+    board.push([]);
     for (let j=0; j < row.length; j++) {
       const cellSelector = `[id="${i}-${j}"]`;
       const cellValue = row[j].trim();
@@ -128,10 +134,38 @@ Then('the game board should be', {timeout: 20 * 1000},  async function (dataTabl
       
       //console.log(`Checking cell at (${i}, ${j}): ${cellValue}`);
       //console.log(await cell.count());
-      //console.log(await cell.textContent());
-      await cell.count();
-      let expectedText;
+      const content = await cell.textContent() || '';
+      let err = false;
       if (cellValue === '0') {
+        if (content !== '') {
+          console.error(`Error in cell (${i}, ${j}): Expected empty, but found "${content}"`);
+          err = true;
+        }else{
+          board[i].push(0);
+        }
+      } else if (cellValue === '*') {
+        if (['', '2', '4'].indexOf(content) === -1) {
+          err = true;
+        }else{
+          global.newTile.push({number: parseInt(content), position: [[i, j]]});
+          board[i].push(parseInt(content));
+        }
+      } else {
+        if (cellValue !== content) {
+          console.error(`Error in cell (${i}, ${j}): Expected "${cellValue}", but found "${content}"`);
+          err = true;
+        }else{
+          board[i].push(parseInt(content));
+        }
+      }
+      if (err) {
+        console.error(`Error in cell (${i}, ${j}): Expected "${cellValue}", but found "${content}"`);
+        throw new Error(`Cell (${i}, ${j}) does not match expected value. Expected: "${cellValue}", Found: "${content}"`);
+      }
+      global.board = board; // Update the global board state
+      //await cell.count();
+      let expectedText;
+      /*if (cellValue === '0') {
         expectedText = '';
         //await expect(cell).toHaveText('', { timeout: 5000 });
       } else if (cellValue === '*') {
@@ -141,7 +175,7 @@ Then('the game board should be', {timeout: 20 * 1000},  async function (dataTabl
         expectedText = cellValue;
         //await expect(cell).toHaveText(cellValue, { timeout: 5000 });
       }
-      await expect(cell).toHaveText(expectedText, { timeout: 5000 });
+      await expect(cell).toHaveText(expectedText, { timeout: 5000 });*/
     }
   }
 });

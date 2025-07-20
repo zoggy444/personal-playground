@@ -40,7 +40,7 @@ When('I click on the {string} button', async function (string) {
   await page.screenshot({ path: 'src/tests/screenshots/when-button-clicked.png', fullPage: true });
 });
 
-Then('the game board should be displayed', async function () {
+Then('the board should be displayed', async function () {
   // Vérifie que le tableau de jeu est visible
   const gameBoard = page.locator('.game-board'); // Remplacez par le sélecteur approprié pour votre tableau de jeu
   await expect(gameBoard).toBeVisible();

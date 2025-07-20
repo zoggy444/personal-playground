@@ -7,9 +7,9 @@ Feature: Gameplay
     * A new tile (2 or 4) appears after each move.
     * If no tile can move in the direction of the arrow key pressed, no new tile appears.
     * If no tile can move in any direction, the game is over.
-
+  
   Rule: The player can move tiles using arrow keys.
-    @current
+
     Scenario: Basic Arrow Right
       Given the board is
         | 2 | 0 | 4 | 0 |

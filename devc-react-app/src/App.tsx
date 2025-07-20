@@ -8,22 +8,13 @@ const WINCONDITION = 2048;
 
 function App({initBoardSet} : {initBoardSet?: number[][]}) {
   const [status, setStatus] = useState("playing");
-  const [boardSet, setBoardSet] = useState([
+  const [boardSet, setBoardSet] = useState(initBoardSet || [
     [0, 2, 2, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
   ]);
   const [boardEditText, SetBoardEditText] = useState("[[0, 2, 2, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]");
-
-  useEffect(() => {
-    if (initBoardSet) {
-      const boardString = JSON.stringify(initBoardSet);
-      console.log("Setting board to", boardString);
-      SetBoardEditText(boardString);
-      setBoardSet(initBoardSet);
-    }
-  }, []);  // empty dependency array : run this only once on mount
 
   // Add event listeners
   useEffect(() => {
@@ -164,9 +155,10 @@ function App({initBoardSet} : {initBoardSet?: number[][]}) {
   }
 
   const handleSaveBoard = function () {
+    console.log("Saving board");
     let newBoardSet:number[][];
     try {
-      newBoardSet = JSON.parse((document.querySelector('textarea') as HTMLTextAreaElement).value);
+      newBoardSet = JSON.parse(boardEditText);
       if (newBoardSet.length != 4 || newBoardSet[0].length != 4) {
         throw new Error("Invalid board size - must be 4x4 - got " + newBoardSet.length + "x" + newBoardSet[0].length);
       }
@@ -179,13 +171,20 @@ function App({initBoardSet} : {initBoardSet?: number[][]}) {
           }
         }
       }
-    }catch (e) {
+    }catch (e:any) {
       alert(e.message);
       return;
     }
     // if the board is valid, we can set it
     setBoardSet(newBoardSet);
     setStatus("playing");
+  }
+
+  const handleCancelEdit = function () {
+    console.log("Cancelling edit");
+    setStatus("playing");
+    // reset the textarea to the current board
+    SetBoardEditText(JSON.stringify(boardSet));
   }
 
   /* JSX */
@@ -209,7 +208,7 @@ function App({initBoardSet} : {initBoardSet?: number[][]}) {
         <>
           <textarea value={boardEditText} onChange={e => SetBoardEditText(e.target.value)}></textarea>
           <PrimaryButton onClick={() => handleSaveBoard()}>SAVE</PrimaryButton>
-          <DefaultButton onClick={() => setStatus("playing")}>CANCEL</DefaultButton>
+          <DefaultButton onClick={handleCancelEdit}>CANCEL</DefaultButton>
         </>
       )}
     </>
