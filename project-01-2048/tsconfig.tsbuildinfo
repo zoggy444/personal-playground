@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/Board.tsx","./src/Row.tsx","./src/Square.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/tests/step_definitions/gameplay.ts","./src/tests/step_definitions/new_game.ts","./src/tests/support/hooks.ts"],"errors":true,"version":"5.8.3"}
