@@ -1,8 +1,9 @@
-import { test as base, createBdd } from 'playwright-bdd';
-import * as OTPAuth from "otpauth"
+import { createBdd } from 'playwright-bdd';
+import { test as base } from './auth.setup'
+/*import * as OTPAuth from "otpauth"
 
 type Fixtures = {
-  // set types of your fixtures
+
 };
 
 function generateOTP(secret: string) {
@@ -24,9 +25,9 @@ function hasExportedCredentials() {
   } else if (!process.env.GITHUB_OTP) {
     throw new Error(`GITHUB_OTP environment variables must be set.. (type 'export GITHUB_OTP="my_otp"')`);
   }
-}
+}*/
 
-export const test = base.extend<Fixtures>({
+export const test = base/*.extend<Fixtures>({
   page: async ({ page }, use) => {
     // go to codespace page and pass 2FA
     try {
@@ -60,6 +61,6 @@ export const test = base.extend<Fixtures>({
 
     await use(page);
   },
-});
+});*/
 
 export const { Given, When, Then } = createBdd(test);

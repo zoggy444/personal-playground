@@ -5,6 +5,7 @@ let columnCurrent: number = 0;
 
 Given('I am on the game page', async ({ page }) => {
   await page.goto('https://ominous-carnival-ppj9rx5rvpw376r4-5173.app.github.dev/');
+  await page.waitForLoadState('domcontentloaded')
 });
 
 When('I land on the game page', async ({ page }) => {
@@ -33,4 +34,9 @@ Then('I should see an empty 7x6 board', async ({ page }) => {
 Then("it should be player 1's turn", async ({ page }) => {
   const h2 = page.locator(`h2:has-text("Player 1's turn")`);
   await expect(h2).toBeVisible();
+});
+
+Then('the column should highlight', async ({page}) => {
+  const column = page.locator('.column').nth(columnCurrent);
+  await expect(column).toHaveClass(/highlighted/);
 });
