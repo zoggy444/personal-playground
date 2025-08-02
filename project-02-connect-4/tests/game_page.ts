@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test';
-import { Given, When, Then } from './fixtures';
+import { Given, When, Then } from './fixtures.ts';
 
 let columnCurrent: number = 0;
 
@@ -9,6 +9,7 @@ Given('I am on the game page', async ({ page }) => {
 });
 
 When('I land on the game page', async ({ page }) => {
+  console.log("When I land");
   await page.goto('https://ominous-carnival-ppj9rx5rvpw376r4-5173.app.github.dev/');
 });
 
@@ -16,7 +17,7 @@ When('I hover over a column', async ({ page }) => {
   columnCurrent = Math.floor(Math.random() * 7); // Randomly select a column from 0 to 6
   const column = page.locator('.column').nth(columnCurrent);
   await column.hover();
-  await expect(column).toHaveClass('highlighted'); // Assuming the column gets a 'highlighted' class on hover
+  await expect(column).toHaveClass('/highlighted/'); // Assuming the column gets a 'highlighted' class on hover
 });
 
 Then('I should see a "Connect 4" title', async ({ page }) => {
