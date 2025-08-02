@@ -1,25 +1,9 @@
 // See: https://playwright.dev/docs/auth#basic-shared-account-in-all-tests
-import { test as setup, expect } from '@playwright/test';
-import { AUTH_FILE } from '../playwright.config';
-
-setup('authenticate', async ({ page }) => {
-  await page.goto('https://authenticationtest.com/simpleFormAuth/');
-  await page.getByLabel('E-Mail Address').fill('simpleForm@authenticationtest.com');
-  await page.getByLabel('Password').fill('pa$$w0rd');
-  await page.getByRole('button', { name: 'Log In' }).click();
-
-  await expect(page.getByRole('link', { name: 'Sign Out' })).toBeVisible();
-
-  await page.context().storageState({ path: AUTH_FILE });
-});
-
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { test as setup } from '@playwright/test';
+import { AUTH_FILE } from '../../playwright.config.js';
 import * as OTPAuth from "otpauth"
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const authFile = path.join(__dirname, '../playwright/.auth/user.json');
+console.log("setup config imported");
 
 function generateOTP(secret: string) {
   const totp = new OTPAuth.TOTP({
@@ -42,6 +26,41 @@ function hasExportedCredentials() {
   }
 }
 
+setup('authenticate', async ({ page }) => {
+  console.log("authenticate");
+  // go to codespace page and pass 2FA
+  try {
+      hasExportedCredentials();
+  } catch (error:any) {
+      console.error("Error: " + error.message);
+      throw error; // throw the error to stop the tests
+  }
+
+  await page.goto('https://ominous-carnival-ppj9rx5rvpw376r4-5173.app.github.dev/');
+
+  await page.screenshot({ path: "tests/screenshots/hooks-before-all-1.png" })
+  await page.waitForLoadState('domcontentloaded')
+  await page.screenshot({ path: "tests/screenshots/hooks-before-all-2.png" })
+  await page.getByLabel("Username or email address").click()
+  await page
+  .getByLabel("Username or email address")
+  .fill(process.env.GITHUB_USER || '');
+  await page.screenshot({ path: "tests/screenshots/hooks-before-all-3.png" })
+  await page.getByLabel("Username or email address").press("Tab")
+  await page.getByLabel("Password").fill(process.env.GITHUB_PASSWORD || '');
+  await page.screenshot({ path: "tests/screenshots/hooks-before-all-4.png" })
+  await page.getByRole("button", { name: "Sign in", "exact": true }).click()
+  await page.screenshot({ path: "tests/screenshots/hooks-before-all-5.png" })
+  await page.getByPlaceholder("XXXXXX").click()
+  const otp = generateOTP(process.env.GITHUB_OTP || '');
+  await page.getByPlaceholder("XXXXXX").fill(otp)
+  await page.screenshot({ path: "tests/screenshots/hooks-before-all-6.png" })
+  await page.waitForLoadState('load', {timeout: 20000});
+  await page.screenshot({ path: "tests/screenshots/hooks-before-all-7.png" })
+
+  await page.context().storageState({ path: AUTH_FILE });
+});
+/*
 export const test = setup('authenticate', async ({ page }) => {
   // go to codespace page and pass 2FA
   try {
@@ -73,5 +92,5 @@ export const test = setup('authenticate', async ({ page }) => {
   await page.waitForLoadState('load', {timeout: 20000});
   await page.screenshot({ path: "tests/screenshots/hooks-before-all-7.png" })
 
-  await page.context().storageState({ path: authFile });
-});
+  await page.context().storageState({ path: AUTH_FILE });
+});*/
