@@ -1,33 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import Board from './Board'
+//import { useState } from 'react'
+
+// Define types for the board structure
+type Tuple<T, N extends number> = N extends N ? number extends N ? T[] : _TupleOf<T, N, []> : never;
+type _TupleOf<T, N extends number, R extends unknown[]> = R['length'] extends N ? R : _TupleOf<T, N, [T, ...R]>;
+type column = Tuple<number, 6>;
+type BoardSet = Tuple<column, 7>;
 
 function App() {
-  const [count, setCount] = useState(0)
+  // 7 columns with 6 rows each, initialized to 0
+  const boardSet:BoardSet = Array.from({ length: 7 }, () => Array(6).fill(0)) as BoardSet;
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <h1>Connect 4</h1>
+      <Board boardSet={boardSet}/>
+      <h2>Player 1's turn</h2>
     </>
   )
 }

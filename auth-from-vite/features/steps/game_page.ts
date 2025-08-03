@@ -52,7 +52,7 @@ Then('the column should highlight', async ({page}) => {
   await expect(column).toHaveClass(/highlighted/);
 });
 
-Then('a coin of my color is dropped in the highlighted column', async ({}) => {
+Then('a coin of my color is dropped in the highlighted column', async ({page}) => {
   // Step: Then a coin of my color is dropped in the highlighted column
   // From: features/game_page.feature:18:5
 });

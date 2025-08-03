@@ -20,7 +20,7 @@ test.describe('Game page', () => {
     await Given('I am on the game page', null, { page }); 
     await When('I hover over a column', null, { page }); 
     await And('I click', null, { page }); 
-    await Then('a coin of my color is dropped in the highlighted column'); 
+    await Then('a coin of my color is dropped in the highlighted column', null, { page }); 
     await And('my turn ends', null, { page }); 
   });
 
