@@ -26,9 +26,9 @@ function App() {
   };
 
   const handleClick = function (colIndex: number) {
-    console.log(`Column clicked: ${colIndex}`);
-    if (roomLeft[colIndex] > 0) {
-      console.log(`Column ${colIndex} has room, dropping coin.`);
+    //console.log(`Column clicked: ${colIndex}`);
+    if (roomLeft[colIndex] > 0 && winner === 0) {
+      //console.log(`Column ${colIndex} has room, dropping coin.`);
       dropCoin(colIndex);
       // Switch player after a successful drop
       setPlayer(prevPlayer => prevPlayer === 1 ? 2 : 1);
@@ -42,7 +42,8 @@ function App() {
       {winner > 0 ? 
         <h2>Player {winner} wins!</h2>
         : 
-        <h2>Player {player}'s turn</h2>}
+        <h2>Player {player}'s turn</h2>
+      }
     </>
   )
 }
@@ -51,7 +52,7 @@ const checkWinCondition = function (boardSet: BoardSet) {
   // @todo: Implement actual fonction through TDD
   let winner = 0;
   // Check for win conditions here (not implemented in this example)
-  if (boardSet[0][0] === 1 && boardSet[1][0] === 1 && boardSet[2][0] === 1 && boardSet[3][0] === 1) {
+  if (boardSet[0][5] === 1 && boardSet[1][5] === 1 && boardSet[2][5] === 1 && boardSet[3][5] === 1) {
     winner = 1;
   }
   return winner;

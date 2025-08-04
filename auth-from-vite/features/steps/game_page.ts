@@ -10,7 +10,8 @@ let playerCurrent: number = 1;
 
 Given('I am on the game page', async ({ page }) => {
   await page.goto(url);
-  await page.waitForLoadState('domcontentloaded')
+  await page.waitForLoadState('domcontentloaded');
+  playerCurrent = 1; // Reset player to 1 at the start
 });
 
 When('I land on the game page', async ({ page }) => {
@@ -144,7 +145,17 @@ Then('I should see a message indicating that I won', async ({ page }) => {
 });
 
 Then('the game should end', async ({ page }) => {
-  // Step: And the game should end
-  // From: features\game_page.feature:32:5
+  columnCurrent = Math.floor(Math.random() * 7); // Randomly select a column from 0 to 6
+  const column = page.locator('.column').nth(columnCurrent);
+  const emptySlots = column.locator('.slot:not(.fill)');
+  const emptySlotCount = await emptySlots.count();
+  colCurrentEmpty = emptySlotCount;
+  await column.hover();
+  await column.click();
+  const emptySlotsAfter = column.locator('.slot:not(.fill)');
+  const emptySlotAfterCount = await emptySlotsAfter.count();
+  if (emptySlotAfterCount !== colCurrentEmpty) {
+    throw new Error(`Empty slot count does not match expected fill count, expected: ${colCurrentEmpty}, got: ${emptySlotAfterCount}`);
+  }
 });
 
