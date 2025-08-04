@@ -3,6 +3,11 @@ import { defineBddConfig } from 'playwright-bdd';
 export const AUTH_FILE = 'playwright/.auth/user.json';
 
 export default defineConfig({
+  reporter: 'html',
+  use: {
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+  },
   projects: [
     {
       name: 'auth',

@@ -13,6 +13,9 @@
   vertical-align: top;
   background-color: rgb(74, 74, 228);
 }
+.column.highlighted {
+  background-color: rgb(141, 141, 241);
+}
 
 .slot {
   width: 95px;
@@ -24,10 +27,10 @@
   box-sizing: border-box;
 }
 
-.slot.player1 {
+.slot.player-1 {
   background-color: rgb(243, 240, 63);
 }
 
-.slot.player2 {
-  background-color: rgb(50, 50, 158);
+.slot.player-2 {
+  background-color: rgb(206, 20, 20);
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-function Board({boardSet}:{boardSet: number[][]}) {
+function Board({boardSet, onClick}:
+    {boardSet: number[][]; onClick: (colIndex: number) => void}) {
   const [highlighted, setHighlighted] = useState(-1)
 
   return (
@@ -9,10 +10,11 @@ function Board({boardSet}:{boardSet: number[][]}) {
         <div 
         key={colIndex}
         className={ colIndex === highlighted ? "column highlighted" : "column"}
-        onMouseOver={() => setHighlighted(colIndex)}>
+        onMouseOver={() => setHighlighted(colIndex)}
+        onClick={() => onClick(colIndex)}>
           {col.map((cell, cellIndex) => (
-            <div key={cellIndex} className={`slot ${cell === 0 ? 'empty' : ''}`}>
-              {cell !== 0 && <span className={`player-${cell}`}>{cell}</span>}
+            <div key={cellIndex} className={`slot ${cell === 0 ? 'empty' : `fill player-${cell}`}`}>
+              {cell !== 0 && <span className={`fill player-${cell}`}></span>}
             </div>
           ))}
         </div>
