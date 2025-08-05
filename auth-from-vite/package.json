@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "npx bddgen && npx playwright test"
+    "test": "npx bddgen && npx playwright test",
+    "test-ct": "playwright test -c playwright-ct.config.ts"
   },
   "dependencies": {
     "playwright-bdd": "^8.3.1",
@@ -17,6 +18,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
+    "@playwright/experimental-ct-react": "^1.54.2",
     "@types/node": "^24.1.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
