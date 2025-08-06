@@ -1,54 +1,19 @@
-# React + TypeScript + Vite
+# Connect 4
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+For this project I decided to use playwright-bdd instead of cucumber.
+It took A LOT of effort to manage to get the "beforeAll" to work like it does on cucumber.
+I ended up rebuilding my app from scratch at some point but I managed to get it to work.
 
-Currently, two official plugins are available:
+For the separation BDD vs TDD I decided to start with BDD scenarios and build the app structure.
+Then, I would implement the lower level features through TDD.
+Specifically, I wrote the "win condition" function with TDD process.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+I decided I would not get to much into UI/UX (again) for this project.
+For now I still need to practice my development life cycle, the tools, the code.
+Once I have a few projects under my belt, I'll unify them with a single design system.
+It's gonna be a whole project in and of itself !
 
-## Expanding the ESLint configuration
+I'm starting to get more comfortable with TypeScript and Playwright.
+I didn't get to practice React a lot yet.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+It's time for my *Next* challenge !
