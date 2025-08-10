@@ -20,16 +20,14 @@ Feature: Gameplay
 
     Scenario: Guess correctly a location
         Given I am in a game
-        When I make a guess on the map
-        And the guess is within the correct region/department
+        When I make a correct guess on the map
         Then I should see a message indicating the guess was correct
         And the correct region/department should be highlighted green on the map
         And A new round button should be available to start the next round
     
     Scenario: Guess incorrectly a location
         Given I am in a game
-        When I make a guess on the map
-        And the guess is outside the correct region/department
+        When I make an incorrect guess on the map
         Then I should see a message indicating the guess was incorrect
         And the region/department I selected should be highlighted red on the map
 
@@ -39,6 +37,7 @@ Feature: Gameplay
         When I make a third incorrect guess on the map
         Then I should see a message indicating the guess was incorrect
         And the region/department I selected should be highlighted red on the map
+        And I should not be able to make another guess
         And A new round button should be available to start the next round
     
     Scenario: Start a new round
