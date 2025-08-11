@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MapContainer, TileLayer, useMap, Marker, Popup } from 'react-leaflet'
+import { MapContainer } from 'react-leaflet'
 import { GeoJSON } from 'react-leaflet/GeoJSON'
 import { Button, RadioGroup, Radio } from "@blueprintjs/core";
 import './App.css'
@@ -11,6 +11,8 @@ import 'leaflet/dist/leaflet.css';
 import departmentsData from '../data/departements-version-simplifiee.json' with { type: "json" };
 import regionData from '../data/regions-version-simplifiee.json';
 import type { GeoJsonObject } from 'geojson';
+
+console.log(regionData);
 
 import regionGeoJson from '../data/geojson_data';
 
@@ -29,6 +31,8 @@ function App() {
     setInGame(true);
     // @todo : randomize
     setToGuess(gameMode === 'regions' ? 'Bretagne' : 'Finistère');
+    setGuessedCorrectly(null);
+    setGuesseIncorrectly([]);
   }
 
   return (
@@ -39,18 +43,21 @@ function App() {
           <MapContainer center={MAP_CENTER} zoom={5} scrollWheelZoom={false}>
             {gameMode === 'regions' && Array.from(geojsonData.entries()).map(([k, v]) => (
               <GeoJSON
-                  key={k} data={v.geojson}
+                  key={`${v.name === toGuess ? guessedIncorrectly.length >=3 ? 'failed-' : 'to-guess-' : '' }${k}`} data={v.geojson}
                   style={{ 
                     color: `${ v.name == guessedCorrectly ? 'green' : guessedIncorrectly.indexOf(v.name) !== -1 ? 'red' : 'blue'}`,
                     weight: 1,
                     fillColor: `${ v.name == guessedCorrectly ? 'lightgreen' : guessedIncorrectly.indexOf(v.name) !== -1 ? 'lightred' : 'lightblue'}`,
                     fillOpacity: 0.25,
-                    className: `region-${k}` }}
+                    className: `region-${k} ${v.name === toGuess ? guessedIncorrectly.length >=3 ? 'failed' : 'to-guess' : '' }` }}
                   eventHandlers={{
                     click: () => {
                       console.log(`Clicked on ${v.name}`);
                       if (v.name === toGuess) {
                         setGuessedCorrectly(v.name);
+                      } else if (guessedIncorrectly.length >= 3) {
+                        console.log(`Already guessed 3 times incorrectly: ${guessedIncorrectly}`);
+                        // Do not allow more than 3 incorrect guesses
                       }else{
                         setGuesseIncorrectly([...guessedIncorrectly, v.name]);
                       }
@@ -61,13 +68,13 @@ function App() {
             ))}
             {gameMode === 'departments' && departmentsData.features.map((feature) => (
               <GeoJSON
-                  key={feature.properties.code}
+                  key={`${feature.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed-' : 'to-guess-' : '' }${feature.properties.code}`}
                   data={feature as GeoJsonObject}
                   style={{
                     color: `${ feature.properties.nom == guessedCorrectly ? 'green' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'red' : 'blue'}`, weight: 1,
                     fillColor: `${ feature.properties.nom == guessedCorrectly ? 'lightgreen' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'lightred' : 'lightblue'}`,
                     fillOpacity: 0.25,
-                    className: `department-${feature.properties.code}` }}
+                    className: `department-${feature.properties.code} ${feature.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed' : 'to-guess' : '' }` }}
                   eventHandlers={{
                     click: () => {
                       console.log(`Clicked on ${feature.properties.nom}`);
@@ -75,6 +82,9 @@ function App() {
                       console.log(feature);
                       if (feature.properties.nom === toGuess) {
                         setGuessedCorrectly(feature.properties.nom);
+                      }else if (guessedIncorrectly.length >= 3) {
+                        console.log(`Already guessed 3 times incorrectly: ${guessedIncorrectly}`);
+                        // Do not allow more than 3 incorrect guesses
                       }else {
                         setGuesseIncorrectly([...guessedIncorrectly, feature.properties.nom]);
                       }
@@ -92,26 +102,30 @@ function App() {
                 className="next-round-button"
                 onClick={() => {
                   setGuessedCorrectly(null);
+                  setGuesseIncorrectly([]); // Reset incorrect guesses
                   setToGuess(gameMode === 'regions' ? 'Bretagne' : 'Finistère'); // Reset to a new guess
                 }}>
-                Next Round
+                New Round
               </Button>
             </>
           )}
           {!guessedCorrectly && guessedIncorrectly.length !== 0 && (
             <>
-              <p>You guessed incorrectly... try again!</p>
+              {guessedIncorrectly.length < 3 && (
+                <p>You guessed incorrectly... try again!</p>
+              )}
               {guessedIncorrectly.length >= 3 && (
                 <>
-                  <p>You have made 3 incorrect guesses. The correct answer was <i className='to-guess-name'>{toGuess}</i>.</p>
+                  <p>You have made 3 incorrect guesses.</p>
                   <Button
                     intent="primary" size="large"
                     className="next-round-button"
                     onClick={() => {
                       setGuessedCorrectly(null);
+                      setGuesseIncorrectly([]); // Reset incorrect guesses
                       setToGuess(gameMode === 'regions' ? 'Bretagne' : 'Finistère'); // Reset to a new guess
                     }}>
-                    Next Round
+                    New Round
                   </Button>
                 </>
               )}

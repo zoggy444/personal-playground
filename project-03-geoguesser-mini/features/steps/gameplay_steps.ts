@@ -11,6 +11,8 @@ const url = process.env.BASE_URL || 'https://ominous-carnival-ppj9rx5rvpw376r4-5
 
 let gameMode = 'regions'; // Default game mode
 
+// @todo: randomize game mode selection and place to guess
+
 Given('I am on the game page', async ({ page }) => {
   await page.goto(url);
   await page.waitForLoadState('domcontentloaded');
@@ -60,7 +62,47 @@ Given('I have made two incorrect guesses', async ({ page }) => {
 });
 
 Given('The {string} button is available', async ({ page }, arg: string) => {
-  console.log("Step yet to be implemented");
+  const toGuess = await page.locator('.to-guess-name').textContent();
+  // make both an incorrect and a correst guess to ensure both red and green highlight are reset
+  let guessedKey: string = '';
+  // Take the first 2 to guess to make sure at least one is wrong
+  if (gameMode === 'regions') {
+    guessedKey = [...regionGeoJson.entries()]
+      .slice(0, 2) 
+      .filter(({ 1: v }) => v.name !== toGuess)
+      .map(([k]) => k)[0];
+  }else if (gameMode === 'departments') {
+    guessedKey = departmentsData.features
+      .slice(0, 2) 
+      .filter(feature => feature.properties.nom !== toGuess)
+      .map(feature => feature.properties.code)[0];
+  }
+  console.log(`Guessing: ${toGuess} with wrong key: ${guessedKey}`);
+  if (gameMode === 'regions') {
+    await page.locator(`.region-${guessedKey}`).click();
+  } else if (gameMode === 'departments') {
+    await page.locator(`.department-${guessedKey}`).click();
+  }
+  
+  let toGuessKey: string = '';
+  if (gameMode === 'regions') {
+    toGuessKey = [...regionGeoJson.entries()]
+      .filter(({ 1: v }) => v.name === toGuess)
+      .map(([k]) => k)[0];
+  }else if (gameMode === 'departments') {
+    toGuessKey = departmentsData.features
+      .filter(feature => feature.properties.nom === toGuess)
+      .map(feature => feature.properties.code)[0];
+  }
+  console.log(`Guessing: ${toGuess} with key: ${toGuessKey}`);
+  if (gameMode === 'regions') {
+    await page.locator(`.region-${toGuessKey}`).click();
+  } else if (gameMode === 'departments') {
+    await page.locator(`.department-${toGuessKey}`).click();
+  }
+  const button = page.locator(`button:has-text("${arg}")`);
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
 });
 
 When('I land on the game page', async ({ page }) => {
@@ -96,7 +138,7 @@ When('I make a correct guess on the map', async ({ page }) => {
 
 When('I make an incorrect guess on the map', async ({ page }) => {
   const toGuess = await page.locator('.to-guess-name').textContent();
-  let guessedKey: string | string[] = '';
+  let guessedKey: string = '';
   // Take the first 2 to guess to make sure at least one is wrong
   if (gameMode === 'regions') {
     guessedKey = [...regionGeoJson.entries()]
@@ -119,25 +161,27 @@ When('I make an incorrect guess on the map', async ({ page }) => {
 
 When('I make a third incorrect guess on the map', async ({ page }) => {
   const toGuess = await page.locator('.to-guess-name').textContent();
-  let guessedKey: string = '';
-  // Take the last 2 to guess to make sure at least one is wrong
-  // and not already guessed
+  let guessedKeys: string[] = [''];
+  // Take the last 4 to guess to make sure at least 3 are wrong
+  // pick the third one so it hasn't already been guessed earlier
   if (gameMode === 'regions') {
-    guessedKey = [...regionGeoJson.entries()]
-      .slice(-2) 
+    guessedKeys = [...regionGeoJson.entries()]
+      .slice(0, 4) 
       .filter(({ 1: v }) => v.name !== toGuess)
-      .map(([k]) => k)[0];
+      .map(([k]) => k)
+      .slice(0, 3)
   }else if (gameMode === 'departments') {
-    guessedKey = departmentsData.features
-      .slice(-2) 
+    guessedKeys = departmentsData.features
+      .slice(0, 4) 
       .filter(feature => feature.properties.nom !== toGuess)
-      .map(feature => feature.properties.code)[0];
+      .map(feature => feature.properties.code)
+      .slice(0, 3);
   }
-  console.log(`Guessing: ${toGuess} with wrong key: ${guessedKey}`);
+  console.log(`third guessGuessing: ${toGuess} with wrong key: ${guessedKeys[2]}`);
   if (gameMode === 'regions') {
-    await page.locator(`.region-${guessedKey}`).click();
+    await page.locator(`.region-${guessedKeys[2]}`).click();
   } else if (gameMode === 'departments') {
-    await page.locator(`.department-${guessedKey}`).click();
+    await page.locator(`.department-${guessedKeys[2]}`).click();
   }
 });
 
@@ -194,7 +238,7 @@ Then('the correct region\\/department should be highlighted green on the map', a
 });
 
 Then('A new round button should be available to start the next round', async ({ page }) => {
-  const nextRoundButton = page.locator('button:has-text("Next Round")');
+  const nextRoundButton = page.locator('button:has-text("New Round")');
   await expect(nextRoundButton).toBeVisible();
   await expect(nextRoundButton).toBeEnabled();
 });
@@ -204,19 +248,74 @@ Then('I should see a message indicating the guess was incorrect', async ({ page 
   expect(await page.locator(`text=${message}`).isVisible()).toBe(true);
 });
 
+Then('I should see a message indicating that I lost the round', async ({ page }) => {
+  const message = 'You have made 3 incorrect guesses.';
+  expect(await page.locator(`text=${message}`).isVisible()).toBe(true);
+});
+
 Then('the region\\/department I selected should be highlighted red on the map', async ({ page }) => {
   const guessedRegion = await page.locator("[stroke='red']").count();
   expect(guessedRegion).toBeGreaterThan(0);
 });
 
 Then('I should not be able to make another guess', async ({ page }) => {
-  
+  const toGuess = await page.locator('.to-guess-name').textContent();
+  let guessedKey: string = '';
+  // Take the first 5 to guess to make sure at least 4 are wrong
+  // and take the 4th one so it hasn't already been guessed earlier
+  if (gameMode === 'regions') {
+    guessedKey = [...regionGeoJson.entries()]
+      .slice(0, 5) 
+      .filter(({ 1: v }) => v.name !== toGuess)
+      .map(([k]) => k)
+      .slice(0,4)[3];
+  }else if (gameMode === 'departments') {
+    guessedKey = departmentsData.features
+      .slice(0, 5) 
+      .filter(feature => feature.properties.nom !== toGuess)
+      .map(feature => feature.properties.code)
+      .slice(0, 4)[3];
+  }
+  console.log(`Guessing: ${toGuess} with wrong key: ${guessedKey}`);
+  if (gameMode === 'regions') {
+    const guessedRegion = page.locator(`.region-${guessedKey}`);
+    await guessedRegion.click();
+    console.log(await guessedRegion.count());
+    console.log(await guessedRegion.getAttribute('stroke'));
+    expect(await guessedRegion.getAttribute('stroke')).toBe('blue');
+  } else if (gameMode === 'departments') {
+    const guessedDepartment = page.locator(`.department-${guessedKey}`);
+    await guessedDepartment.click();
+    expect(await guessedDepartment.getAttribute('stroke')).toBe('blue');
+  }
 });
 
-Then('the name of a new region\\/department to guess should be displayed', async ({ page }) => {
-  console.log("Step yet to be implemented");
+Then('the correct region\\/department should be intermitentently highlighted in green on the map', async ({ page }) => {
+  const toGuess = await page.locator('.to-guess-name').textContent();
+  let toGuessKey: string = '';
+  if (gameMode === 'regions') {
+    toGuessKey = [...regionGeoJson.entries()]
+      .filter(({ 1: v }) => v.name === toGuess)
+      .map(([k]) => k)[0];
+  }else if (gameMode === 'departments') {
+    toGuessKey = departmentsData.features
+      .filter(feature => feature.properties.nom === toGuess)
+      .map(feature => feature.properties.code)[0];
+  }
+  const toGuessColor = await page.locator(`.region-${toGuessKey}, .department-${toGuessKey}`).getAttribute('stroke');
+  await page.waitForTimeout(2000);
+  const newToGuessColor = await page.locator(`.region-${toGuessKey}, .department-${toGuessKey}`).getAttribute('stroke');
+  console.log(`toGuessColor: ${toGuessColor}, newToGuessColor: ${newToGuessColor}`);
+  expect(toGuessColor).not.toBe(newToGuessColor);
+  // Either the initial or the new color should be green
+  expect(toGuessColor).toBe(/green|blue/);
+  expect(newToGuessColor).toBe(/green|blue/);
 });
 
 Then('the map should reset to its initial state', async ({ page }) => {
-  console.log("Step yet to be implemented");
+  const guessedRegion = await page.locator("[stroke='green']").count();
+  expect(guessedRegion).toBe(0);
+  const guessedIncorrectRegion = await page.locator("[stroke='red']").count();
+  expect(guessedIncorrectRegion).toBe(0);
+  console.log(await page.locator("[stroke='blue']").count())
 });

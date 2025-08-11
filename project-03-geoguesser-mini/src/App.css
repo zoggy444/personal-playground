@@ -9,3 +9,22 @@
   width: 100%;
   height: 60vh;
 }
+
+.failed {
+  animation-name: color_change;
+  animation-duration: 0.75s;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+@keyframes color_change {
+  from {
+    stroke: blue;
+    fill: lightblue;
+  }
+
+  to {
+    stroke: green;
+    fill: lightgreen ;
+  }
+}

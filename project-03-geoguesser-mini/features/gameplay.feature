@@ -35,13 +35,15 @@ Feature: Gameplay
         Given I am in a game
         And I have made two incorrect guesses
         When I make a third incorrect guess on the map
-        Then I should see a message indicating the guess was incorrect
+        Then I should see a message indicating that I lost the round
         And the region/department I selected should be highlighted red on the map
         And I should not be able to make another guess
         And A new round button should be available to start the next round
+        And the correct region/department should be intermitentently highlighted in green on the map
     
     Scenario: Start a new round
-        Given The "new round" button is available
+        Given I am in a game
+        And The "New Round" button is available
         When I click on "New Round"
-        Then the name of a new region/department to guess should be displayed
+        Then the name of a region/department to guess should be displayed
         And the map should reset to its initial state
