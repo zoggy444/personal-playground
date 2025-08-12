@@ -11,20 +11,19 @@
 }
 
 .failed {
-  animation-name: color_change;
+  animation-name: stroke_change;
   animation-duration: 0.75s;
   animation-iteration-count: infinite;
-  animation-direction: alternate;
+  animation-timing-function: steps(2, end);
+  fill-opacity: 1;
 }
 
-@keyframes color_change {
+@keyframes stroke_change {
   from {
-    stroke: blue;
-    fill: lightblue;
+    stroke-width: 4;
   }
 
   to {
-    stroke: green;
-    fill: lightgreen ;
+    stroke-width: 1;
   }
 }
