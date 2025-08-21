@@ -71,17 +71,18 @@ function App() {
 
   return (
     <>
-      <h1 style={{width: "1000px"}}>Geoguesser Mini</h1>
+      {/* <h1 style={{width: "1000px"}}>Geoguesser Mini</h1> */}
       {inGame ? (
         <>
           <Game gameMode={gameMode} toGuess={toGuess}
             guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
-            onAreaClick={handleAreaClick}/>
-          <GamePrompter 
+            onAreaClick={handleAreaClick}
+            onNewRoundClick={handleNewRound}/>
+          {/* <GamePrompter 
             toGuess={toGuess} guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
-            onNewRoundClick={handleNewRound}/>
+            onNewRoundClick={handleNewRound}/> */}
         </>  
       ) : (
         <GameSetting 
