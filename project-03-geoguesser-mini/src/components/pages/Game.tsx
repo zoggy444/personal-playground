@@ -28,6 +28,30 @@ function Game({
 
   const geojsonData: GeoDataType = gameMode === 'region' ? regionData : departmentData;;
 
+  const onGeoJsonClick = (e: LeafletEvent) => {
+    const layer = e.propagatedFrom;
+    const name = layer.feature.properties.nom;
+    return onAreaClick(name);
+  }
+
+  const onGeoJsonMouseOver = (e: LeafletEvent) => {
+    const layer = e.propagatedFrom;
+    // Highlight the hovered area without changing color
+    layer.setStyle({
+      weight: 3, // Increase stroke width to highlight
+      fillOpacity: 1 // Increase fill opacity
+    })
+  }
+
+  const onGeoJsonMouseOut = (e: LeafletEvent) => {
+    const layer = e.propagatedFrom;
+    // Reset the style when mouse leaves
+    layer.setStyle({
+      weight: 1, // Reset stroke width
+      fillOpacity: 0.25 // Reset fill opacity
+    });
+  }
+
   return (
   <> 
     <MapContainer
@@ -48,27 +72,9 @@ function Game({
           fillOpacity: 0.25,
           className: `area-${feature.properties.code} ${feature.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed' : 'to-guess' : '' }` }}
           eventHandlers={{
-          click: (e: LeafletEvent) => {
-            const layer = e.propagatedFrom;
-            const name = layer.feature.properties.nom;
-            return onAreaClick(name);
-          },
-          mouseover: (e) => {
-            const layer = e.propagatedFrom;
-            // Highlight the hovered area without changing color
-            layer.setStyle({
-            weight: 3, // Increase stroke width to highlight
-            fillOpacity: 1 // Increase fill opacity
-            });
-          },
-          mouseout: (e) => {
-            const layer = e.propagatedFrom;
-            // Reset the style when mouse leaves
-            layer.setStyle({
-            weight: 1, // Reset stroke width
-            fillOpacity: 0.25 // Reset fill opacity
-            });
-          }
+            click: onGeoJsonClick,
+            mouseover: onGeoJsonMouseOver,
+            mouseout: onGeoJsonMouseOut
           }}>
         </GeoJSON>
       ))}
