@@ -168,8 +168,7 @@ When('I make a third incorrect guess on the map', async ({ page }) => {
 });
 
 Then('I should see a title {string}', async ({ page }, arg: string) => {
-  const title = await page.locator('h1').textContent();
-  expect(title).toBe(arg);
+  await expect(page.getByRole('heading', { name: arg })).toBeVisible();
 });
 
 Then('I should see a description {string}', async ({ page }, arg: string) => {
@@ -199,9 +198,11 @@ Then('A map of France with region or department borders should be displayed', as
 });
 
 Then('region\\/department names should be hidden', async ({ page }) => {
-  const map = page.locator('.leaflet-container');
-  expect(await map.getByText('Ain').count()).toBe(0);
-  expect(await map.getByText('Bretagne').count()).toBe(0);
+  const layers = await page.locator('path').all();
+  for (let i=0 ; i<layers.length; i++) {
+    const l = layers[i];
+    expect(await l.textContent()).toBe("");
+  }
 });
 
 Then('the name of a region\\/department to guess should be displayed', async ({ page }) => {

@@ -99,7 +99,6 @@ function App() {
 
   return (
     <>
-      {/* <h1 style={{width: "1000px"}}>Geoguesser Mini</h1> */}
       {inGame ? (
         <>
           <Game gameMode={gameMode} toGuess={toGuess}
@@ -111,10 +110,13 @@ function App() {
             onSettingsClick={handleSettingsClick}/>
         </>  
       ) : (
-        <GameSetting 
-        gameMode={gameMode}
-        onChangeGameMode={(m:AreaType) => setGameMode(m)}
-        onStartGame={handleStartGame}/>
+        <>
+          <h1>Geoguesser Mini</h1>
+          <GameSetting 
+          gameMode={gameMode}
+          onChangeGameMode={(m:AreaType) => setGameMode(m)}
+          onStartGame={handleStartGame}/>
+        </>
       )}
     </>
   )
