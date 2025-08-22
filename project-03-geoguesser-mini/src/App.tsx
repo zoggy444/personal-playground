@@ -9,21 +9,56 @@ import GameSetting from './components/pages/GameSetting';
 import Game from './components/pages/Game';
 import type { AreaType } from './types';
 
+import departmentData from '../data/departements-version-simplifiee.json' with { type: "json" };
+import regionData from '../data/regions-version-simplifiee.json';
+
 export const MAP_CENTER:[number,number] = [46.6034, 1.8883]; // Center of France
 
+let dptGuessInitMap = new Map<string, string>;
+departmentData.features.forEach(f => {
+  dptGuessInitMap.set(f.properties.code, f.properties.nom);
+})
+
+let regGuessInitMap = new Map<string, string>;
+regionData.features.forEach(f => {
+  regGuessInitMap.set(f.properties.code, f.properties.nom);
+})
+
+// returns random key from Set or Map
+function getRandomKey(collection:Map<string, string>) {
+    let keys = Array.from(collection.keys());
+    return keys[Math.floor(Math.random() * keys.length)];
+}
+
 function App() {
-  const [inGame, setInGame] = useState(false)
-  const [gameMode, setGameMode] = useState<AreaType>('region')
+  const [inGame, setInGame] = useState(false);
+  const [victory, setVictory] = useState(false);
+  const [gameMode, setGameMode] = useState<AreaType>('region');
+  const [dptGuessMap, setDptGuessMap] = useState(new Map(dptGuessInitMap))
+  const [regGuessMap, setRegGuessMap] = useState(new Map(regGuessInitMap))
   const [toGuess, setToGuess] = useState<string | null>(null);
   const [guessedCorrectly, setGuessedCorrectly] = useState<string | null>(null);
   const [guessedIncorrectly, setGuesseIncorrectly] = useState<string[]>([]);
 
+  const setNewToGuess = function () {
+    if (gameMode == 'region') {
+      const newKey = getRandomKey(regGuessMap)
+      setToGuess(regGuessMap.get(newKey) || null)
+    }else{
+      const newKey = getRandomKey(dptGuessMap)
+      setToGuess(dptGuessMap.get(newKey) || null)
+    }
+  }
+
   const handleStartGame = () => {
     setInGame(true);
     // @todo : randomize
-    setToGuess(gameMode === 'region' ? 'Bretagne' : 'Finistère');
+    setNewToGuess();
     setGuessedCorrectly(null);
     setGuesseIncorrectly([]);
+    setVictory(false);
+    setDptGuessMap(new Map(dptGuessInitMap))
+    setRegGuessMap(new Map(regGuessInitMap))
   }
 
   const handleAreaClick = (name: string) => {
@@ -32,6 +67,21 @@ function App() {
     if (guessedIncorrectly.length >= 3) return; // Do not allow more than 3 incorrect guesses
     if (name === toGuess) {
       setGuessedCorrectly(name);
+      if (gameMode == 'region') {
+        const newRegMap = new Map(
+          [...regGuessMap]
+          .filter(([k, v]) => v !== toGuess )
+        );
+        if (newRegMap.size === 0) setVictory(true)
+        setRegGuessMap(newRegMap)
+      }else{
+        const newDptMap = new Map(
+          [...dptGuessMap]
+          .filter(([k, v]) => v !== toGuess )
+        );
+        if (newDptMap.size === 0) setVictory(true)
+        setDptGuessMap(newDptMap)
+      }
     } else {
       setGuesseIncorrectly([...guessedIncorrectly, name]);
     }
@@ -40,7 +90,7 @@ function App() {
   const handleNewRound = () => {
     setGuessedCorrectly(null);
     setGuesseIncorrectly([]); // Reset incorrect guesses
-    setToGuess(gameMode === 'region' ? 'Bretagne' : 'Finistère'); // Reset to a new guess
+    setNewToGuess();
   }
 
   const handleSettingsClick = () => {
@@ -53,6 +103,7 @@ function App() {
       {inGame ? (
         <>
           <Game gameMode={gameMode} toGuess={toGuess}
+            victory={victory}
             guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
             onAreaClick={handleAreaClick}

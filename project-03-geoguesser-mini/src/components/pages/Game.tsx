@@ -15,12 +15,14 @@ import GamePrompter from "./GamePrompter";
 import MapControl from "../reusable-ui/MapControl";
 import type { GameProps, GeoDataType } from '../../types';
 import { Button } from '@blueprintjs/core';
+import { useMemo, useState } from 'react';
 
 // const FRANCE_BOUNDS = new LatLngBounds([-5.156709, 41.320594],[9.707940, 51.119273])
 
 function Game({
   gameMode,
   toGuess,
+  victory,
   guessedCorrectly,
   guessedIncorrectly,
   onAreaClick,
@@ -84,7 +86,7 @@ function Game({
         <Button onClick={onSettingsClick}>Quit Game</Button>
       </MapControl>
       <MapControl key='topright' position='topright'>
-        <GamePrompter toGuess={toGuess} guessedCorrectly={guessedCorrectly}
+        <GamePrompter toGuess={toGuess} victory={victory} guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
             onNewRoundClick={onNewRoundClick}/>
       </MapControl>
