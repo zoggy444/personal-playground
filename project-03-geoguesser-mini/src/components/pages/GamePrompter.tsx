@@ -1,11 +1,5 @@
 import { Button } from '@blueprintjs/core';
-
-type GamePrompterProps = {
-  toGuess: string | null;
-  guessedCorrectly: string | null;
-  guessedIncorrectly: string[];
-  onNewRoundClick: () => void;
-};
+import type { GamePrompterProps } from '../../types';
 
 function GamePrompter({
   toGuess,

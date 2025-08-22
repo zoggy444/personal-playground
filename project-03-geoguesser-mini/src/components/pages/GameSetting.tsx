@@ -1,13 +1,6 @@
 import { Button, RadioGroup, Radio } from "@blueprintjs/core";
-import type { AreaType } from "./../../App";
-
 import "../../index.css"
-
-type GameSettingProps = {
-  gameMode: string;
-  onChangeGameMode: (mode: AreaType) => void;
-  onStartGame: () => void;
-};
+import type { AreaType, GameSettingProps } from "../../types";
 
 function GameSetting({gameMode, onChangeGameMode, onStartGame}: GameSettingProps) {
   return (

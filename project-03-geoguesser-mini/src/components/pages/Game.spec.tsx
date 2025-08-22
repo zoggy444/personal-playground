@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/experimental-ct-react';
 import Game from './Game';
-import type { GameProps } from './Game';
+import type { GameProps } from '../../types';
 
 const handleAreaClick = (name:string):void => {
   if (mockState.guessedCorrectly) return; // Do not allow more guesses if already guessed correctly
@@ -19,6 +19,7 @@ let mockState: GameProps = {
   guessedCorrectly: null,
   guessedIncorrectly: [],
   onAreaClick: handleAreaClick,
+  onNewRoundClick: () => {}, // todo adapt
 }
 
 test.describe("@UIElements, basics", () => {
@@ -30,7 +31,8 @@ test.describe("@UIElements, basics", () => {
         toGuess={mockState.toGuess}
         guessedCorrectly={mockState.guessedCorrectly}
         guessedIncorrectly={mockState.guessedIncorrectly}
-        onAreaClick={mockState.onAreaClick}/>
+        onAreaClick={mockState.onAreaClick}
+        onNewRoundClick={mockState.onNewRoundClick}/>
     );
     const zoomControl =  (await component).locator('.leaflet-control-zoom');
     expect(await zoomControl.count()).toBe(0);

@@ -7,32 +7,7 @@ import 'leaflet/dist/leaflet.css';
 
 import GameSetting from './components/pages/GameSetting';
 import Game from './components/pages/Game';
-
-export type GeoDataType = {
-  type: string;
-  features: ({
-    type: string;
-    geometry: {
-      type: string;
-      coordinates: number[][][];
-    };
-    properties: {
-      code: string;
-      nom: string;
-    };
-  } | {
-    type: string;
-    geometry: {
-      type: string;
-      coordinates: number[][][][];
-    };
-    properties: {
-      code: string;
-      nom: string;
-    };
-  })[];
-}
-export type AreaType = 'region' | 'department';
+import type { AreaType } from './types';
 
 export const MAP_CENTER:[number,number] = [46.6034, 1.8883]; // Center of France
 

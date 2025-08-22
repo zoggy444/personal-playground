@@ -1,3 +1,4 @@
+import type { MapControlProps } from "../../types";
 
 // Classes used by Leaflet to position controls
 const POSITION_CLASSES = {
@@ -7,12 +8,7 @@ const POSITION_CLASSES = {
   topright: 'leaflet-top leaflet-right',
 } as const;
 
-type PositionType = "bottomleft" | "bottomright" | "topleft" | "topright";
-
-function MapControl({ position, children }:
-    {position: PositionType;
-      children?: React.ReactNode;
-    }) {
+function MapControl({ position, children }: MapControlProps) {
   // const parentMap = useMap()
 
   const positionClass = 

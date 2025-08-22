@@ -1,8 +1,6 @@
-import type { AreaType } from "../../App";
 import { MapContainer } from 'react-leaflet'
 import { GeoJSON } from 'react-leaflet/GeoJSON'
 import { MAP_CENTER } from "../../App";
-import type { GeoDataType } from "../../App";
 import type { GeoJsonObject } from 'geojson';
 import type { LeafletEvent, } from 'leaflet';
 
@@ -15,17 +13,9 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import 'leaflet/dist/leaflet.css';
 import GamePrompter from "./GamePrompter";
 import MapControl from "../reusable-ui/MapControl";
+import type { GameProps, GeoDataType } from '../../types';
 
 // const FRANCE_BOUNDS = new LatLngBounds([-5.156709, 41.320594],[9.707940, 51.119273])
-
-export type GameProps = {
-  gameMode: AreaType;
-  toGuess: string | null;
-  guessedCorrectly: string | null;
-  guessedIncorrectly: string[];
-  onAreaClick: (name: string) => void;
-  onNewRoundClick: () => void;
-};
 
 function Game({
   gameMode,
