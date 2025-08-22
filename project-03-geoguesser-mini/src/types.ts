@@ -40,6 +40,7 @@ export type GameProps = {
   guessedIncorrectly: string[];
   onAreaClick: (name: string) => void;
   onNewRoundClick: () => void;
+  onSettingsClick: () => void;
 };
 
 export type MapControlProps = {

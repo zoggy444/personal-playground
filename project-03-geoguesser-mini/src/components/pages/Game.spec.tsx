@@ -20,6 +20,7 @@ let mockState: GameProps = {
   guessedIncorrectly: [],
   onAreaClick: handleAreaClick,
   onNewRoundClick: () => {}, // todo adapt
+  onSettingsClick: () => {}, // todo adapt
 }
 
 test.describe("@UIElements, basics", () => {
@@ -32,7 +33,8 @@ test.describe("@UIElements, basics", () => {
         guessedCorrectly={mockState.guessedCorrectly}
         guessedIncorrectly={mockState.guessedIncorrectly}
         onAreaClick={mockState.onAreaClick}
-        onNewRoundClick={mockState.onNewRoundClick}/>
+        onNewRoundClick={mockState.onNewRoundClick}
+        onSettingsClick={mockState.onSettingsClick}/>
     );
     const zoomControl =  (await component).locator('.leaflet-control-zoom');
     expect(await zoomControl.count()).toBe(0);

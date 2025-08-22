@@ -14,6 +14,7 @@ import 'leaflet/dist/leaflet.css';
 import GamePrompter from "./GamePrompter";
 import MapControl from "../reusable-ui/MapControl";
 import type { GameProps, GeoDataType } from '../../types';
+import { Button } from '@blueprintjs/core';
 
 // const FRANCE_BOUNDS = new LatLngBounds([-5.156709, 41.320594],[9.707940, 51.119273])
 
@@ -24,6 +25,7 @@ function Game({
   guessedIncorrectly,
   onAreaClick,
   onNewRoundClick,
+  onSettingsClick,
 }: GameProps) {
 
   const geojsonData: GeoDataType = gameMode === 'region' ? regionData : departmentData;;
@@ -72,13 +74,16 @@ function Game({
           fillOpacity: 0.25,
           className: `area-${feature.properties.code} ${feature.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed' : 'to-guess' : '' }` }}
           eventHandlers={{
-            click: onGeoJsonClick,
-            mouseover: onGeoJsonMouseOver,
-            mouseout: onGeoJsonMouseOut
+          click: onGeoJsonClick,
+          mouseover: onGeoJsonMouseOver,
+          mouseout: onGeoJsonMouseOut
           }}>
         </GeoJSON>
       ))}
-      <MapControl position='topright'>
+      <MapControl key='topleft' position='topleft'>
+        <Button onClick={onSettingsClick}>Quit Game</Button>
+      </MapControl>
+      <MapControl key='topright' position='topright'>
         <GamePrompter toGuess={toGuess} guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
             onNewRoundClick={onNewRoundClick}/>

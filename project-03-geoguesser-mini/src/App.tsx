@@ -43,6 +43,10 @@ function App() {
     setToGuess(gameMode === 'region' ? 'Bretagne' : 'Finistère'); // Reset to a new guess
   }
 
+  const handleSettingsClick = () => {
+    setInGame(false);
+  }
+
   return (
     <>
       {/* <h1 style={{width: "1000px"}}>Geoguesser Mini</h1> */}
@@ -52,7 +56,8 @@ function App() {
             guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
             onAreaClick={handleAreaClick}
-            onNewRoundClick={handleNewRound}/>
+            onNewRoundClick={handleNewRound}
+            onSettingsClick={handleSettingsClick}/>
         </>  
       ) : (
         <GameSetting 
