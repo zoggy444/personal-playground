@@ -1,6 +1,7 @@
-import { useState } from "react";
 import { Button, RadioGroup, Radio } from "@blueprintjs/core";
-import type { AreaType } from "./App";
+import type { AreaType } from "./../../App";
+
+import "../../index.css"
 
 type GameSettingProps = {
   gameMode: string;

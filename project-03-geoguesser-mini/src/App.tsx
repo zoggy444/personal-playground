@@ -1,13 +1,12 @@
 import { useState } from 'react'
 
-import './App.css'
+import './index.css'
 import "normalize.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import 'leaflet/dist/leaflet.css';
 
-import GameSetting from './GameSetting';
-import Game from './Game';
-import GamePrompter from './GamePrompter';
+import GameSetting from './components/pages/GameSetting';
+import Game from './components/pages/Game';
 
 export type GeoDataType = {
   type: string;
@@ -79,10 +78,6 @@ function App() {
             guessedIncorrectly={guessedIncorrectly}
             onAreaClick={handleAreaClick}
             onNewRoundClick={handleNewRound}/>
-          {/* <GamePrompter 
-            toGuess={toGuess} guessedCorrectly={guessedCorrectly}
-            guessedIncorrectly={guessedIncorrectly}
-            onNewRoundClick={handleNewRound}/> */}
         </>  
       ) : (
         <GameSetting 
