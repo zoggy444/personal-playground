@@ -129,7 +129,7 @@ When('I click on {string}', async ({ page }, arg) => {
   await button.click();
 });
 
-When('I hover over a region\\/department on the map', async ({ page }, arg) => {
+When('I hover over an area on the map', async ({ page }, arg) => {
   const dataMap = dataSource.get(gameMode);
   if (!dataMap) {
     throw new Error(`No data found for game mode: ${gameMode}`);
@@ -207,7 +207,7 @@ Then('A map of France with region or department borders should be displayed', as
   expect(area).toBeGreaterThan(0);
 });
 
-Then('region\\/department names should be hidden', async ({ page }) => {
+Then('area names should be hidden', async ({ page }) => {
   const layers = await page.locator('path').all();
   for (let i=0 ; i<layers.length; i++) {
     const l = layers[i];
@@ -215,7 +215,7 @@ Then('region\\/department names should be hidden', async ({ page }) => {
   }
 });
 
-Then('the name of a region\\/department to guess should be displayed', async ({ page }) => {
+Then('the name of an area to guess should be displayed', async ({ page }) => {
   const name = await page.locator('.to-guess-name').textContent();
   if (!toGuessGlobal) {
     toGuessGlobal = name || '';
@@ -232,7 +232,7 @@ Then('I should have a way to quit the game', async ({ page }) => {
   await expect(button).toBeEnabled();
 });
 
-Then('the region\\/department should be highlighted without changing color', async ({ page }) => {
+Then('the area should be highlighted without changing color', async ({ page }) => {
   const hoveredArea = page.locator(`.area-${hoverKey}`);
   expect(await hoveredArea.getAttribute('stroke-width')).toBe('3')
 });
@@ -242,7 +242,7 @@ Then('I should see a message indicating the guess was correct', async ({ page })
   expect(await page.locator(`text=${message}`).isVisible()).toBe(true);
 });
 
-Then('the correct region\\/department should be highlighted green on the map', async ({ page }) => {
+Then('the correct area should be highlighted green on the map', async ({ page }) => {
   const guessedArea = await page.locator("[stroke='green']").count();
   expect(guessedArea).toBeGreaterThan(0);
 });
@@ -263,7 +263,7 @@ Then('I should see a message indicating that I lost the round', async ({ page })
   expect(await page.locator(`text=${message}`).isVisible()).toBe(true);
 });
 
-Then('the region\\/department I selected should be highlighted red on the map', async ({ page }) => {
+Then('the area I selected should be highlighted red on the map', async ({ page }) => {
   const guessedRegion = await page.locator("[stroke='red']").count();
   expect(guessedRegion).toBeGreaterThan(0);
 });
@@ -292,7 +292,7 @@ Then('I should not be able to make another guess', async ({ page }) => {
   }
 });
  
-Then('the correct region\\/department should be intermitentently highlighted on the map', async ({ page }) => {
+Then('the correct area should be intermitentently highlighted on the map', async ({ page }) => {
   const toGuess = await page.locator('.to-guess-name').textContent();
   let correctKey = getKeys({
     toGuess: toGuess || '',
@@ -301,11 +301,6 @@ Then('the correct region\\/department should be intermitentently highlighted on 
   console.log(`correctKey: ${correctKey}, hoverKey: ${hoverKey}`);
   const correctArea = page.locator(`.area-${correctKey}`);
   expect(correctArea).toContainClass('failed');
-  /*const toGuessHighlight = await page.locator(`.area-${correctKey}`).getAttribute('stroke-width');
-  await page.waitForTimeout(1000);
-  const newToGuessHighlight = await page.locator(`.area-${correctKey}`).getAttribute('stroke-width');
-  console.log(`toGuessColor: ${toGuessHighlight}, newToGuessColor: ${newToGuessHighlight}`);
-  expect(toGuessHighlight).not.toBe(newToGuessHighlight);*/
 });
 
 Then('the area to guess should not have been already guessed', async ({ page }) => {

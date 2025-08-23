@@ -15,20 +15,20 @@ Feature: Gameplay
         Given I am on the game page
         When I click on "Start Game"
         Then A map of France with region or department borders should be displayed
-        And region/department names should be hidden
-        And the name of a region/department to guess should be displayed
+        And area names should be hidden
+        And the name of an area to guess should be displayed
         And I should have a way to quit the game
 
-    Scenario: Hover over a region/department
+    Scenario: Hover over an area
         Given I am in a game
-        When I hover over a region/department on the map
-        Then the region/department should be highlighted without changing color
+        When I hover over an area on the map
+        Then the area should be highlighted without changing color
 
     Scenario: Guess correctly a location
         Given I am in a game
         When I guess correctly
         Then I should see a message indicating the guess was correct
-        And the correct region/department should be highlighted green on the map
+        And the correct area should be highlighted green on the map
         And A new round button should be available to start the next round
         And I should not be able to make another guess
     
@@ -36,23 +36,23 @@ Feature: Gameplay
         Given I am in a game
         When I make an incorrect guess on the map
         Then I should see a message indicating the guess was incorrect
-        And the region/department I selected should be highlighted red on the map
+        And the area I selected should be highlighted red on the map
 
     Scenario: Guess incorrectly a location for the third time
         Given I am in a game
         And I have made two incorrect guesses
         When I make a third incorrect guess on the map
         Then I should see a message indicating that I lost the round
-        And the region/department I selected should be highlighted red on the map
+        And the area I selected should be highlighted red on the map
         And I should not be able to make another guess
         And A new round button should be available to start the next round
-        And the correct region/department should be intermitentently highlighted on the map
+        And the correct area should be intermitentently highlighted on the map
 
     Scenario: Start a new round after success
         Given I am in a game
         And I succeeded or failed guessing an area
         When I click on "New Round"
-        Then the name of a region/department to guess should be displayed
+        Then the name of an area to guess should be displayed
         And the area to guess should not have been already guessed
         And the red-highlighted areas should be reset
         And the green-highlighted areas should stay the same
