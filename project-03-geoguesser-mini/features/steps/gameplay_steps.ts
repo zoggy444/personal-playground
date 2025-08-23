@@ -24,6 +24,7 @@ let dataSource = new Map<AreaType, Map<string, string>>(
 );
 let hoverKey: string = '';
 let toGuessGlobal: string = '';
+let nbCorrectGuesses = 0;
 
 function getDataMap() {
   const dataMap = dataSource.get(gameMode);
@@ -76,8 +77,8 @@ Given('I am in a game', async ({ page }) => {
   gameMode = 'region';
   expect(await page.locator('.leaflet-container').isVisible()).toBe(true);
   expect(await page.locator('.to-guess-name').isVisible()).toBe(true);
+  nbCorrectGuesses = 0;
 });
-
 
 Given('I have made two incorrect guesses', async ({ page }) => {
   const toGuess = await page.locator('.to-guess-name').textContent();
@@ -91,7 +92,7 @@ Given('I have made two incorrect guesses', async ({ page }) => {
   await page.locator(`.area-${guessedKeys[1]}`).click();
 });
 
-Given('The {string} button is available', async ({ page }, arg: string) => {
+Given('I succeeded or failed guessing an area', async ({ page }, arg: string) => {
   const toGuess = await page.locator('.to-guess-name').textContent();
   // make both an incorrect and a correst guess to ensure both red and green highlight are reset
   let wrongGuessKey = getKeys({
@@ -108,9 +109,13 @@ Given('The {string} button is available', async ({ page }, arg: string) => {
   })[0];
   console.log(`Guessing: ${toGuess} with key: ${correctGuessKey}`);
   await page.locator(`.area-${correctGuessKey}`).click();
-  const button = page.locator(`button:has-text("${arg}")`);
+  const button = page.locator(`button:has-text("New Round")`);
   await expect(button).toBeVisible();
   await expect(button).toBeEnabled();
+});
+
+Given('there is only one area left to guess', async ({ page }, arg: string) => {
+  // todo after mockState refactor
 });
 
 When('I land on the game page', async ({ page }) => {
@@ -135,7 +140,7 @@ When('I hover over a region\\/department on the map', async ({ page }, arg) => {
   await page.locator(`.area-${hoverKey}`).hover();
 });
 
-When('I make a correct guess on the map', async ({ page }) => {
+When('I guess correctly', async ({ page }) => {
   const toGuess = await page.locator('.to-guess-name').textContent();
   const correctGuessKey = getKeys({
     toGuess: toGuess || '',
@@ -143,6 +148,7 @@ When('I make a correct guess on the map', async ({ page }) => {
   })[0];
   console.log(`Guessing: ${toGuess} with key: ${correctGuessKey}`);
   await page.locator(`.area-${correctGuessKey}`).click();
+  nbCorrectGuesses += 1;
 });
 
 When('I make an incorrect guess on the map', async ({ page }) => {
@@ -167,6 +173,10 @@ When('I make a third incorrect guess on the map', async ({ page }) => {
   await page.locator(`.area-${wrongGuessKeys[2]}`).click();
 });
 
+When('I quit the game', async ({ page }) => {
+  await page.getByRole('button', {'name': 'Quit Game'}).click()
+});
+
 Then('I should see a title {string}', async ({ page }, arg: string) => {
   await expect(page.getByRole('heading', { name: arg })).toBeVisible();
 });
@@ -185,8 +195,8 @@ Then('I should see a way to select the game mode \\(region or department)', asyn
   await expect(modeSelector).toBeVisible();
 });
 
-Then('I should see a button to start the game', async ({ page }) => {
-  const startButton = page.locator('button:has-text("Start Game")');
+Then('I should have a way to start a new game', async ({ page }) => {
+  const startButton = page.getByRole('button', {name: 'Start Game'});
   await expect(startButton).toBeVisible();
 });
 
@@ -214,6 +224,12 @@ Then('the name of a region\\/department to guess should be displayed', async ({ 
     expect(name).not.toBe(toGuessGlobal);
   }
   expect(name).not.toBeNull();
+});
+
+Then('I should have a way to quit the game', async ({ page }) => {
+  const button = page.getByRole('button', { name: 'Quit Game' })
+  await expect(button).toBeVisible()
+  await expect(button).toBeEnabled();
 });
 
 Then('the region\\/department should be highlighted without changing color', async ({ page }) => {
@@ -292,9 +308,28 @@ Then('the correct region\\/department should be intermitentently highlighted on 
   expect(toGuessHighlight).not.toBe(newToGuessHighlight);*/
 });
 
-Then('the map should reset to its initial state', async ({ page }) => {
-  const guessedRegion = await page.locator("[stroke='green']").count();
-  expect(guessedRegion).toBe(0);
-  const guessedIncorrectRegion = await page.locator("[stroke='red']").count();
-  expect(guessedIncorrectRegion).toBe(0);
+Then('the area to guess should not have been already guessed', async ({ page }) => {
+  // todo after mockState refactor
+});
+
+Then('the red-highlighted areas should be reset', async ({ page }) => {
+  const guessedArea = await page.locator("[stroke='red']").count();
+  expect(guessedArea).toBe(0);
+});
+
+Then('the green-highlighted areas should stay the same', async ({ page }) => {
+  const guessedArea = await page.locator("[stroke='green']").count();
+  expect(guessedArea).toBe(nbCorrectGuesses);
+});
+
+Then('I should land on the game settings', async ({ page }) => {
+  const map = page.locator('.leaflet-container');
+  await expect(map).toBeHidden();
+  const startButton = page.getByRole('button', {name: 'Start Game'});
+  await expect(startButton).toBeVisible();
+});
+
+Then('I should see a message indicating that I won the game', async ({ page }) => {
+  const message = page.getByRole('heading', {name: 'YOU WON THE GAME'})
+  await expect(message).toBeVisible();
 });

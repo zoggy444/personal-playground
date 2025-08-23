@@ -9,7 +9,7 @@ Feature: Gameplay
         And I should see a description "Welcome to Geoguesser Mini! Click the button below to start playing."
         And I should NOT see a map of France
         And I should see a way to select the game mode (region or department)
-        And I should see a button to start the game
+        And I should have a way to start a new game
 
     Scenario: Start a new game
         Given I am on the game page
@@ -17,6 +17,7 @@ Feature: Gameplay
         Then A map of France with region or department borders should be displayed
         And region/department names should be hidden
         And the name of a region/department to guess should be displayed
+        And I should have a way to quit the game
 
     Scenario: Hover over a region/department
         Given I am in a game
@@ -25,7 +26,7 @@ Feature: Gameplay
 
     Scenario: Guess correctly a location
         Given I am in a game
-        When I make a correct guess on the map
+        When I guess correctly
         Then I should see a message indicating the guess was correct
         And the correct region/department should be highlighted green on the map
         And A new round button should be available to start the next round
@@ -47,9 +48,23 @@ Feature: Gameplay
         And A new round button should be available to start the next round
         And the correct region/department should be intermitentently highlighted on the map
 
-    Scenario: Start a new round
+    Scenario: Start a new round after success
         Given I am in a game
-        And The "New Round" button is available
+        And I succeeded or failed guessing an area
         When I click on "New Round"
         Then the name of a region/department to guess should be displayed
-        And the map should reset to its initial state
+        And the area to guess should not have been already guessed
+        And the red-highlighted areas should be reset
+        And the green-highlighted areas should stay the same
+
+    Scenario: Quit the game
+        Given I am in a game
+        When I quit the game
+        Then I should land on the game settings
+
+    Scenario: Win the game
+        Given I am in a game
+        And there is only one area left to guess
+        When I guess correctly
+        Then I should see a message indicating that I won the game
+        And I should have a way to start a new game
