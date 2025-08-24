@@ -110,16 +110,19 @@ Given('I have made two incorrect guesses', async ({ page }) => {
   mockState[`${mockState.gameMode}WrongGuessKeys`] = guessedKeys;
 });
 
-Given('I succeeded or failed guessing an area', async ({ page }, arg: string) => {
+Given('I succeeded in guessing an area', async ({ page }, arg: string) => {
   const toGuessKey = await getToGuessKey(page)
-  let mode = Math.floor(Math.random()) === 0 ? 'success' : 'failure'
-  if (mode === 'success') {
-    await page.locator(`.area-${toGuessKey}`).click();
-  }else{
-    const wrongGuesses = await getRdmKeys(page, true, 3)
-    for (let I = 0; I < wrongGuesses.length; I++) {
-      await page.locator(`.area-${wrongGuesses[I]}`).click();
-    }
+  await page.locator(`.area-${toGuessKey}`).click();
+  
+  const button = page.getByRole('button', {name: 'New Round'});
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
+});
+
+Given('I failed in guessing an area', async ({ page }, arg: string) => {
+  const wrongGuesses = await getRdmKeys(page, true, 3)
+  for (let I = 0; I < wrongGuesses.length; I++) {
+    await page.locator(`.area-${wrongGuesses[I]}`).click();
   }
 
   const button = page.getByRole('button', {name: 'New Round'});
@@ -305,6 +308,7 @@ Then('the red-highlighted areas should be reset', async ({ page }) => {
 });
 
 Then('the green-highlighted areas should stay the same', async ({ page }) => {
+  // @todo : debug this
   const nbCorrectAreas = await page.locator("[stroke='green']").count();
   const nbTotalToGuess = mockState.gameMode == 'reg' ?
    regInitKVMap.size : dptInitKVMap.size;

@@ -51,7 +51,16 @@ Feature: Gameplay
 
     Scenario: Start a new round
         Given I am in a game
-        And I succeeded or failed guessing an area
+        And I succeeded in guessing an area
+        When I click on "New Round"
+        Then the name of an area to guess should be displayed
+        And the area to guess should not have been already guessed
+        And the red-highlighted areas should be reset
+        And the green-highlighted areas should stay the same
+
+    Scenario: Start another new round
+        Given I am in a game
+        And I failed in guessing an area
         When I click on "New Round"
         Then the name of an area to guess should be displayed
         And the area to guess should not have been already guessed
