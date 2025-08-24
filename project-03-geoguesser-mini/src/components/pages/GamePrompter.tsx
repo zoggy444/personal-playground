@@ -6,6 +6,7 @@ function GamePrompter({
   toGuess,
   guessedCorrectly,
   guessedIncorrectly,
+  onStartGameClick,
   onNewRoundClick,
 }: GamePrompterProps) {
   if (!victory) {
@@ -53,6 +54,12 @@ function GamePrompter({
   return (
     <div className="game-prompter">
       <h2>YOU WON THE GAME</h2>
+      <Button 
+        intent="primary" size="large"
+        className="start-game-button"
+        onClick={onStartGameClick}>
+        Start Game
+      </Button>
     </div>
   )
 }

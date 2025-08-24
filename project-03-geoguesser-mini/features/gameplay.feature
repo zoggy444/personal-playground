@@ -13,6 +13,7 @@ Feature: Gameplay
 
     Scenario: Start a new game
         Given I am on the game page
+        And I selected a game mode
         When I click on "Start Game"
         Then A map of France with region or department borders should be displayed
         And area names should be hidden
@@ -34,21 +35,21 @@ Feature: Gameplay
     
     Scenario: Guess incorrectly a location
         Given I am in a game
-        When I make an incorrect guess on the map
+        When I guess incorrectly
         Then I should see a message indicating the guess was incorrect
         And the area I selected should be highlighted red on the map
 
     Scenario: Guess incorrectly a location for the third time
         Given I am in a game
         And I have made two incorrect guesses
-        When I make a third incorrect guess on the map
+        When I guess incorrectly 
         Then I should see a message indicating that I lost the round
         And the area I selected should be highlighted red on the map
         And I should not be able to make another guess
         And A new round button should be available to start the next round
         And the correct area should be intermitentently highlighted on the map
 
-    Scenario: Start a new round after success
+    Scenario: Start a new round
         Given I am in a game
         And I succeeded or failed guessing an area
         When I click on "New Round"

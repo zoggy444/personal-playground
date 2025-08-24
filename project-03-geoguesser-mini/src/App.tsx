@@ -14,17 +14,13 @@ import regionData from '../data/regions-version-simplifiee.json';
 
 export const MAP_CENTER:[number,number] = [46.6034, 1.8883]; // Center of France
 
-let dptGuessInitMap = new Map<string, string>;
-departmentData.features.forEach(f => {
-  dptGuessInitMap.set(f.properties.code, f.properties.nom);
-})
+const regInitKVMap = new Map<string, string>(
+  regionData.features.map(feature => [feature.properties.code, feature.properties.nom]
+));
+const dptInitKVMap = new Map<string, string>(
+  departmentData.features.map(feature => [feature.properties.code, feature.properties.nom])
+);
 
-let regGuessInitMap = new Map<string, string>;
-regionData.features.forEach(f => {
-  regGuessInitMap.set(f.properties.code, f.properties.nom);
-})
-
-// returns random key from Set or Map
 function getRandomKey(collection:Map<string, string>) {
     let keys = Array.from(collection.keys());
     return keys[Math.floor(Math.random() * keys.length)];
@@ -34,8 +30,8 @@ function App() {
   const [inGame, setInGame] = useState(false);
   const [victory, setVictory] = useState(false);
   const [gameMode, setGameMode] = useState<AreaType>('region');
-  const [dptGuessMap, setDptGuessMap] = useState(new Map(dptGuessInitMap))
-  const [regGuessMap, setRegGuessMap] = useState(new Map(regGuessInitMap))
+  const [dptGuessMap, setDptGuessMap] = useState(new Map(dptInitKVMap))
+  const [regGuessMap, setRegGuessMap] = useState(new Map(regInitKVMap))
   const [toGuess, setToGuess] = useState<string | null>(null);
   const [guessedCorrectly, setGuessedCorrectly] = useState<string | null>(null);
   const [guessedIncorrectly, setGuesseIncorrectly] = useState<string[]>([]);
@@ -57,8 +53,9 @@ function App() {
     setGuessedCorrectly(null);
     setGuesseIncorrectly([]);
     setVictory(false);
-    setDptGuessMap(new Map(dptGuessInitMap))
-    setRegGuessMap(new Map(regGuessInitMap))
+    setDptGuessMap(new Map(dptInitKVMap))
+    setRegGuessMap(new Map(regInitKVMap))
+    console.log(regGuessMap)
   }
 
   const handleAreaClick = (name: string) => {
@@ -70,14 +67,14 @@ function App() {
       if (gameMode == 'region') {
         const newRegMap = new Map(
           [...regGuessMap]
-          .filter(([k, v]) => v !== toGuess )
+          .filter(([, v]) => v !== toGuess )
         );
         if (newRegMap.size === 0) setVictory(true)
         setRegGuessMap(newRegMap)
       }else{
         const newDptMap = new Map(
           [...dptGuessMap]
-          .filter(([k, v]) => v !== toGuess )
+          .filter(([, v]) => v !== toGuess )
         );
         if (newDptMap.size === 0) setVictory(true)
         setDptGuessMap(newDptMap)
@@ -107,7 +104,8 @@ function App() {
             guessedIncorrectly={guessedIncorrectly}
             onAreaClick={handleAreaClick}
             onNewRoundClick={handleNewRound}
-            onSettingsClick={handleSettingsClick}/>
+            onSettingsClick={handleSettingsClick}
+            onStartGameClick={handleStartGame}/>
         </>  
       ) : (
         <>

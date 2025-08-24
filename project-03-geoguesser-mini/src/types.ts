@@ -65,6 +65,7 @@ export type GameProps = {
   onAreaClick: (name: string) => void;
   onNewRoundClick: () => void;
   onSettingsClick: () => void;
+  onStartGameClick: () => void;
 };
 
 export type MapControlProps = {
@@ -77,6 +78,7 @@ export type GamePrompterProps = {
   toGuess: string | null;
   guessedCorrectly: string | null;
   guessedIncorrectly: string[];
+  onStartGameClick: () => void;
   onNewRoundClick: () => void;
 };
 

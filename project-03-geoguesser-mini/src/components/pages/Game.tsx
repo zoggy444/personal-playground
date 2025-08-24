@@ -28,6 +28,7 @@ function Game({
   onAreaClick,
   onNewRoundClick,
   onSettingsClick,
+  onStartGameClick,
 }: GameProps) {
 
   const geojsonData: GeoDataType = gameMode === 'region' ? regionData : departmentData;;
@@ -71,10 +72,19 @@ function Game({
           key={`${feature.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed-' : 'to-guess-' : '' }${feature.properties.code}`}
           data={feature as GeoJsonObject}
           style={{
-          color: `${ feature.properties.nom == guessedCorrectly ? 'green' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'red' : 'blue'}`, weight: 1,
-          fillColor: `${ feature.properties.nom == guessedCorrectly ? 'lightgreen' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'lightred' : 'lightblue'}`,
-          fillOpacity: 0.25,
-          className: `area-${feature.properties.code} ${feature.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed' : 'to-guess' : '' }` }}
+            color: `${ feature.properties.nom == guessedCorrectly ? 'green' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'red' : 'blue'}`, weight: 1,
+            fillColor: `${ feature.properties.nom == guessedCorrectly ? 'lightgreen' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'lightred' : 'lightblue'}`,
+            fillOpacity: 0.25,
+            className: `
+              area-${feature.properties.code}
+              ${feature.properties.nom === toGuess ? 
+                (
+                  guessedIncorrectly.length >=3 ?
+                  'failed' :
+                  'to-guess'
+                ) :
+                '' }`
+            }}
           eventHandlers={{
           click: onGeoJsonClick,
           mouseover: onGeoJsonMouseOver,
@@ -88,6 +98,7 @@ function Game({
       <MapControl key='topright' position='topright'>
         <GamePrompter toGuess={toGuess} victory={victory} guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
+            onStartGameClick={onStartGameClick}
             onNewRoundClick={onNewRoundClick}/>
       </MapControl>
     </MapContainer>
