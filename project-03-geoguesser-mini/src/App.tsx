@@ -30,32 +30,31 @@ function App() {
   const [inGame, setInGame] = useState(false);
   const [victory, setVictory] = useState(false);
   const [gameMode, setGameMode] = useState<AreaType>('region');
-  const [dptGuessMap, setDptGuessMap] = useState(new Map(dptInitKVMap))
-  const [regGuessMap, setRegGuessMap] = useState(new Map(regInitKVMap))
+  const [dptGuessMap, setDptGuessMap] = useState(new Map([...dptInitKVMap]))
+  const [regGuessMap, setRegGuessMap] = useState(new Map([...regInitKVMap]))
   const [toGuess, setToGuess] = useState<string | null>(null);
   const [guessedCorrectly, setGuessedCorrectly] = useState<string | null>(null);
   const [guessedIncorrectly, setGuesseIncorrectly] = useState<string[]>([]);
 
   const setNewToGuess = function () {
+    let guessMap;
     if (gameMode == 'region') {
-      const newKey = getRandomKey(regGuessMap)
-      setToGuess(regGuessMap.get(newKey) || null)
+      guessMap = victory ? regInitKVMap : regGuessMap
     }else{
-      const newKey = getRandomKey(dptGuessMap)
-      setToGuess(dptGuessMap.get(newKey) || null)
+      guessMap = victory ? dptInitKVMap : dptGuessMap
     }
+    const newKey = getRandomKey(guessMap)
+    setToGuess(guessMap.get(newKey) || null)
   }
 
   const handleStartGame = () => {
     setInGame(true);
-    // @todo : randomize
     setNewToGuess();
     setGuessedCorrectly(null);
     setGuesseIncorrectly([]);
     setVictory(false);
-    setDptGuessMap(new Map(dptInitKVMap))
-    setRegGuessMap(new Map(regInitKVMap))
-    console.log(regGuessMap)
+    setDptGuessMap(new Map([...dptInitKVMap]))
+    setRegGuessMap(new Map([...regInitKVMap]))
   }
 
   const handleAreaClick = (name: string) => {
