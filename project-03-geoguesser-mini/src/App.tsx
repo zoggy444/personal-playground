@@ -26,6 +26,8 @@ function getRandomKey(collection:Map<string, string>) {
     return keys[Math.floor(Math.random() * keys.length)];
 }
 
+// @ todo: fix state
+
 function App() {
   const [inGame, setInGame] = useState(false);
   const [victory, setVictory] = useState(false);
@@ -101,6 +103,8 @@ function App() {
             victory={victory}
             guessedCorrectly={guessedCorrectly}
             guessedIncorrectly={guessedIncorrectly}
+            regGuessMap={regGuessMap}
+            dptGuessMap={dptGuessMap}
             onAreaClick={handleAreaClick}
             onNewRoundClick={handleNewRound}
             onSettingsClick={handleSettingsClick}

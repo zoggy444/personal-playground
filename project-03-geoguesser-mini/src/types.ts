@@ -62,6 +62,8 @@ export type GameProps = {
   toGuess: string | null;
   guessedCorrectly: string | null;
   guessedIncorrectly: string[];
+  regGuessMap: Map<string, string>;
+  dptGuessMap: Map<string, string>;
   onAreaClick: (name: string) => void;
   onNewRoundClick: () => void;
   onSettingsClick: () => void;

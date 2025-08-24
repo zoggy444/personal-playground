@@ -25,6 +25,8 @@ function Game({
   victory,
   guessedCorrectly,
   guessedIncorrectly,
+  dptGuessMap,
+  regGuessMap,
   onAreaClick,
   onNewRoundClick,
   onSettingsClick,
@@ -32,6 +34,8 @@ function Game({
 }: GameProps) {
 
   const geojsonData: GeoDataType = gameMode === 'region' ? regionData : departmentData;;
+  const areaMap: Map<string, string> = gameMode === 'region' ? regGuessMap : dptGuessMap;;
+
 
   const onGeoJsonClick = (e: LeafletEvent) => {
     const layer = e.propagatedFrom;
@@ -67,17 +71,17 @@ function Game({
         zoomControl={false}
         >
       {/* special key for area to guess to force a rerender on third fail guess and allow className to change*/}
-      {geojsonData.features.map((feature) => (
+      {geojsonData.features.map((f) => (
         <GeoJSON
-          key={`${feature.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed-' : 'to-guess-' : '' }${feature.properties.code}`}
-          data={feature as GeoJsonObject}
+          key={`${f.properties.nom === toGuess ? guessedIncorrectly.length >=3 ? 'failed-' : 'to-guess-' : '' }${f.properties.code}`}
+          data={f as GeoJsonObject}
           style={{
-            color: `${ feature.properties.nom == guessedCorrectly ? 'green' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'red' : 'blue'}`, weight: 1,
-            fillColor: `${ feature.properties.nom == guessedCorrectly ? 'lightgreen' : guessedIncorrectly.indexOf(feature.properties.nom) !== -1 ? 'lightred' : 'lightblue'}`,
+            color: `${ !areaMap.get(f.properties.code) ? 'green' : guessedIncorrectly.indexOf(f.properties.nom) !== -1 ? 'red' : 'blue'}`, weight: 1,
+            fillColor: `${ !areaMap.get(f.properties.code) ? 'lightgreen' : guessedIncorrectly.indexOf(f.properties.nom) !== -1 ? 'lightred' : 'lightblue'}`,
             fillOpacity: 0.25,
             className: `
-              area-${feature.properties.code}
-              ${feature.properties.nom === toGuess ? 
+              area-${f.properties.code}
+              ${f.properties.nom === toGuess ? 
                 (
                   guessedIncorrectly.length >=3 ?
                   'failed' :
